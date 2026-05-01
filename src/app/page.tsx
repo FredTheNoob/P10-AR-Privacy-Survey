@@ -1,53 +1,103 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import Question from "./_components/question";
+import { SURVEY_DATA } from "./lib/survey-data";
 
-import { LatestPost } from "~/app/_components/post";
-import { api, HydrateClient } from "~/trpc/server";
+export default function Home() {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+  const onAnswerChange = (questionId: number, answer: string) => {
+    console.log("ANSWER CHANGE");
+    console.log(questionId, answer);
+    
 
-  void api.post.getLatest.prefetch();
+    setAnswers(answers.set(questionId, answer));
+  };
+
+  function goToPreviousPage() {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
+  }
+
+  function goToNextPage() {
+    console.log(answers);
+
+    // validate answers
+
+    // save answers
+
+
+    // change the page
+    setCurrentPage((prevPage) => prevPage + 1);
+  }
 
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
-          </div>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+        {currentPage === 0 && (
+          <>
+            <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
+              Privacy in AR
+            </h1>
+            <div className="space-y-5">
+              <p>
+                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Vision-Language Models (VLMs) process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
+                This survey aims to explore how users perceive privacy in the context of AR and VLMs. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
+              </p>
+              <p>
+                If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
+              </p>
+              <p>
+                https://www.youtube.com/watch?v=TCU-HCQJrQE
+              </p>
+              <p>
+                Here is another video showcasing possible VLM usage:
+              </p>
+              https://youtu.be/oBZ8toFKZls?si=QQQF30qlVHWAJEeO&t=167
 
-          <LatestPost />
-        </div>
-      </main>
-    </HydrateClient>
+              <p>
+                Please watch until the 3:04 mark
+              </p>
+
+              <p>
+                This survey takes approximately X minutes to complete.
+              </p>
+            </div>
+            <button
+              type="submit"
+              className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
+              onClick={goToNextPage}
+            >
+              Next Page
+            </button>
+          </>
+        )}
+        {currentPage > 0 && (
+          <>
+            {SURVEY_DATA.pages[currentPage]?.map((question, index) =>
+              <Question key={index} question={question} onChange={onAnswerChange} />)
+            }
+            <div className="flex space-x-3">
+              <button
+                type="submit"
+                className="rounded-full bg-white px-10 py-3 font-semibold border border-gray-300 text-gray-700"
+                onClick={goToPreviousPage}
+              >
+                Previous Page
+              </button>
+              <button
+                type="submit"
+                className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
+                onClick={goToNextPage}
+              >
+                Next Page
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </main>
   );
 }
