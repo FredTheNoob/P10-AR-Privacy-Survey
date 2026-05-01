@@ -3,31 +3,62 @@
 import Link from "next/link";
 import { useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA } from "./lib/survey-data";
+import { SURVEY_DATA, type SurveyData, type Question as QuestionType } from "./lib/survey-data";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+  const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
 
-  const onAnswerChange = (questionId: number, answer: string) => {
-    console.log("ANSWER CHANGE");
-    console.log(questionId, answer);
-    
-
-    setAnswers(answers.set(questionId, answer));
+  const onAnswerChange = (questionIdx: number, answer: string) => {
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions.pages];
+      let question = updatedQuestions[currentPage]![questionIdx];
+      question!.answer = answer;
+      return { ...prevQuestions, pages: updatedQuestions };
+    });
   };
+
+  function setQuestionError(question: QuestionType, error: string, errorObj: { hasError: boolean }) {
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions.pages];
+      question.error = error;
+      return { ...prevQuestions, pages: updatedQuestions };
+    });
+    errorObj.hasError = true;
+  }
 
   function goToPreviousPage() {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   }
 
   function goToNextPage() {
-    console.log(answers);
-
     // validate answers
+    let errorObj = { hasError: false };
+    for (let question of questions.pages[currentPage]!) {
+      question.error = undefined; // reset previous errors
+      if (!question.answer) {
+        setQuestionError(question, "This question is required.", errorObj);
+        continue;
+      }
 
-    // save answers
-
+      switch (question.type) {
+        case "number":
+          if (isNaN(Number(question.answer))) {
+            setQuestionError(question, "Please enter a valid number.", errorObj);
+            continue;
+          }
+          if (question.min !== undefined && Number(question.answer) < question.min) {
+            setQuestionError(question, `Value must be at least ${question.min}.`, errorObj);
+            continue;
+          }
+          if (question.max !== undefined && Number(question.answer) > question.max) {
+            setQuestionError(question, `Value must be at most ${question.max}.`, errorObj);
+            continue;
+          }
+          break;
+      }
+    }
+    if (errorObj.hasError) return;
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
@@ -77,7 +108,12 @@ export default function Home() {
         {currentPage > 0 && (
           <>
             {SURVEY_DATA.pages[currentPage]?.map((question, index) =>
-              <Question key={index} question={question} onChange={onAnswerChange} />)
+              <Question
+                key={index}
+                index={index}
+                question={question}
+                onChange={onAnswerChange}
+              />)
             }
             <div className="flex space-x-3">
               <button

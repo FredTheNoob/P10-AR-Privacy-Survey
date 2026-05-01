@@ -1,6 +1,7 @@
 type BaseQuestion = {
-    id: number;
     title: string;
+    answer?: string;
+    error?: string;
 }
 
 type RadioQuestion = BaseQuestion & {
@@ -16,7 +17,7 @@ type NumberQuestion = BaseQuestion & {
 
 export type Question = RadioQuestion | NumberQuestion;
 
-type SurveyData = {
+export type SurveyData = {
     pages: Question[][]
 }
 
@@ -25,12 +26,12 @@ export const SURVEY_DATA: SurveyData = {
         [],
         [
             {
-                id: 1,
                 title: "How old are you? (at least 18 years old)",
-                type: "number"
+                type: "number",
+                min: 18,
+                max: 120
             },
             {
-                id: 2,
                 title: "What is your gender?",
                 type: "radio",
                 options: [
