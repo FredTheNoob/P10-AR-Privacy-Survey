@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import Question from "./_components/question";
 import { SURVEY_DATA, type SurveyData, type Question as QuestionType } from "./lib/survey-data";
@@ -17,6 +16,19 @@ export default function Home() {
       return { ...prevQuestions, pages: updatedQuestions };
     });
   };
+
+  const onOptionInputAnswerChange = (questionIdx: number, optionIdx: number, inputText: string) => {
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions.pages];
+      let question = updatedQuestions[currentPage]![questionIdx];
+      if (question!.type !== "radio") return prevQuestions;
+      let option = question!.options[optionIdx]!;
+      if (option.type === "text") {
+        option.inputText = inputText;
+      }
+      return { ...prevQuestions, pages: updatedQuestions };
+    });
+  }
 
   function setQuestionError(question: QuestionType, error: string, errorObj: { hasError: boolean }) {
     setQuestions((prevQuestions) => {
@@ -43,23 +55,36 @@ export default function Home() {
 
       switch (question.type) {
         case "number":
-          if (isNaN(Number(question.answer))) {
+          const answerNum = Number(question.answer);
+          if (isNaN(answerNum)) {
             setQuestionError(question, "Please enter a valid number.", errorObj);
             continue;
           }
-          if (question.min !== undefined && Number(question.answer) < question.min) {
+          if (question.min !== undefined && answerNum < question.min) {
             setQuestionError(question, `Value must be at least ${question.min}.`, errorObj);
             continue;
           }
-          if (question.max !== undefined && Number(question.answer) > question.max) {
+          if (question.max !== undefined && answerNum > question.max) {
             setQuestionError(question, `Value must be at most ${question.max}.`, errorObj);
             continue;
+          }
+          break;
+
+        case "radio":
+          for (const option of question.options) {
+            if (option.value === question.answer && option.type === "text") {
+              if (!option.inputText) {
+                setQuestionError(question, "This option is required.", errorObj);
+                break;
+              }
+            }
           }
           break;
       }
     }
     if (errorObj.hasError) return;
 
+    console.log(questions);
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
   }
@@ -113,6 +138,7 @@ export default function Home() {
                 index={index}
                 question={question}
                 onChange={onAnswerChange}
+                onOptionInputChange={onOptionInputAnswerChange}
               />)
             }
             <div className="flex space-x-3">

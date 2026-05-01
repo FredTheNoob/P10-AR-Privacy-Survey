@@ -4,9 +4,20 @@ type BaseQuestion = {
     error?: string;
 }
 
+type ChooseRadioOption = {
+    type: "choose";
+    value: string;
+}
+
+type TextRadioOption = {
+    type: "text";
+    value: string;
+    inputText?: string;
+}
+
 type RadioQuestion = BaseQuestion & {
   type: "radio";
-  options: string[];
+  options: (ChooseRadioOption | TextRadioOption)[];
 };
 
 type NumberQuestion = BaseQuestion & {
@@ -35,9 +46,18 @@ export const SURVEY_DATA: SurveyData = {
                 title: "What is your gender?",
                 type: "radio",
                 options: [
-                    "Male",
-                    "Female",
-                    "Other"
+                    {
+                        type: "choose",
+                        value: "Male"
+                    },
+                    {
+                        type: "choose",
+                        value: "Female"
+                    },
+                    {
+                        type: "text",
+                        value: "Other"
+                    }
                 ]
             }
         ]
