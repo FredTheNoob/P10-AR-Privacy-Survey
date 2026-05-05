@@ -19,3 +19,30 @@ model Post {
 
   @@index([name])
 }
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  responses Response[]
+}
+
+model SurveyQuestion {
+  id       String @id @default(cuid())
+  question String
+
+  responses Response[]
+}
+
+model Response {
+  id     String @id @default(cuid())
+  answer String
+
+  userId     String
+  questionId String
+
+  user     User           @relation(fields: [userId], references: [id])
+  question SurveyQuestion @relation(fields: [questionId], references: [id])
+
+  createdAt DateTime @default(now())
+}

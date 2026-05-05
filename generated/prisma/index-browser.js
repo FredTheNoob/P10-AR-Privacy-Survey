@@ -128,6 +128,24 @@ exports.Prisma.PostScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SurveyQuestionScalarFieldEnum = {
+  id: 'id',
+  question: 'question'
+};
+
+exports.Prisma.ResponseScalarFieldEnum = {
+  id: 'id',
+  answer: 'answer',
+  userId: 'userId',
+  questionId: 'questionId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -140,7 +158,10 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Post: 'Post'
+  Post: 'Post',
+  User: 'User',
+  SurveyQuestion: 'SurveyQuestion',
+  Response: 'Response'
 };
 
 /**
