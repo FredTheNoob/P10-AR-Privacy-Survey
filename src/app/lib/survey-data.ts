@@ -1,84 +1,40 @@
-type BaseQuestion = {
-    title: string;
-    image?: string;
-    required?: boolean;
-    answer?: string;
-    error?: string;
+import { AgreeDisagreeOptions, ScenarioQuestions } from "./common-survey-data";
+import * as SurveyTypes from "./survey-types";
+
+export function isQuestion(page: SurveyTypes.Question | SurveyTypes.InformationPage): page is SurveyTypes.Question {
+    return (page as SurveyTypes.Question).title !== undefined;
 }
 
-type ChooseRadioOption = {
-    type: "choose";
-    value: string;
-}
-
-type TextRadioOption = {
-    type: "text";
-    value: string;
-    inputText?: string;
-}
-
-type RadioQuestion = BaseQuestion & {
-    type: "radio";
-    options: (ChooseRadioOption | TextRadioOption)[];
-};
-
-type NumberQuestion = BaseQuestion & {
-    type: "number";
-    min?: number;
-    max?: number;
-};
-
-type TextQuestion = BaseQuestion & {
-    type: "text";
-    value: string;
-};
-
-type InformationPage = {
-    type: "info";
-    lines: string[];
-}
-
-
-export type Question = RadioQuestion | NumberQuestion | TextQuestion;
-
-export function isQuestion(page: Question | InformationPage): page is Question {
-    return (page as Question).title !== undefined;
-}
-
-export function isQuestionRequired(question: Question): boolean {
+export function isQuestionRequired(question: SurveyTypes.Question): boolean {
     return question.required === undefined || question.required === true;
 }
 
-export type SurveyData = {
-    pages: (Question[] | InformationPage[])[];
+function randomizeQuestionPairs(questionPages: SurveyTypes.SurveyContent[][]): SurveyTypes.SurveyContent[][] {
+    const paired: [SurveyTypes.SurveyContent[], SurveyTypes.SurveyContent[]][] = []; // A 3D array holds our pairs
+
+    // Create the pairs
+    for (let i = 0; i + 1 < questionPages.length; i += 2) {
+        const first = questionPages[i];
+        const second = questionPages[i + 1];
+        if (!first || !second) continue; // TS gets angry if we don't check this
+        paired.push([first, second]);
+    }
+
+    // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+    for (let i = paired.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const a = paired[i];
+        const b = paired[j];
+        if (!a || !b) continue; // TS gets angry if we don't check this
+        paired[i] = b;
+        paired[j] = a;
+    }
+
+    // Flatten the array: 3D -> 2D
+    return paired.flat();
 }
 
-const AgreeDisagreeOptions: { options: ChooseRadioOption[] } = {
-    options: [
-        {
-            type: "choose",
-            value: "Strongly disagree"
-        },
-        {
-            type: "choose",
-            value: "Disagree"
-        },
-        {
-            type: "choose",
-            value: "Neutral"
-        },
-        {
-            type: "choose",
-            value: "Agree"
-        },
-        {
-            type: "choose",
-            value: "Strongly agree"
-        }
-    ]
-}
-
-export const SURVEY_DATA: SurveyData = {
+export const SURVEY_DATA: SurveyTypes.SurveyData = {
     pages: [
         [],
         [
@@ -149,7 +105,6 @@ export const SURVEY_DATA: SurveyData = {
             },
             {
                 title: "I am aware of how this AR system processes and stores my data.",
-                type: "radio",
                 ...AgreeDisagreeOptions
             },
             {
@@ -159,7 +114,6 @@ export const SURVEY_DATA: SurveyData = {
             },
             {
                 title: "I am concerned that personal information may influence the answers the Visual-Language Model (VLM) gives me.",
-                type: "radio",
                 ...AgreeDisagreeOptions
             },
             // TODO: If they answer “agree” or “strongly agree” in previous question, they get this question:
@@ -179,24 +133,53 @@ export const SURVEY_DATA: SurveyData = {
                 ]
             }
         ],
-        // TODO: Add questions for all images when doing the randomization task
-        [
-            {
-                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s",
-                title: "I am comfortable with this image being processed by a Visual-Language Model (VLM).",
-                type: "radio",
-                ...AgreeDisagreeOptions
-            }
-        ], 
+        ...randomizeQuestionPairs(
+            [
+                ...ScenarioQuestions(
+                    "You are at the supermarket looking for cheap fruit",
+                    "What is the cheapest fruit?",
+                    ["The cheapest fruit is bananas at $0.99 per pound."],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+                ...ScenarioQuestions(
+                    "You are going for a walk and stumble upon a pond.",
+                    "What type of duck is this?",
+                    ["That is a mallard duck"],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+                ...ScenarioQuestions(
+                    "You are at a group exercise.",
+                    "How do we get started?",
+                    ["idk bro"],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+                ...ScenarioQuestions(
+                    "You are at a parking lot looking for your car.",
+                    "Where is my car? It's a grey chevrolet spark.",
+                    ["To the left of the parking lot."],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+                ...ScenarioQuestions(
+                    "You are inside your home.",
+                    "Does moving my sofa to the left corner of the room look better?",
+                    ["Yeah man, that looks better!"],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+                ...ScenarioQuestions(
+                    "You are inside your home.",
+                    "Where is the TV remote?",
+                    ["It's on the coffee table."],
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                ),
+            ]
+        ),
         [
             {
                 title: "I am comfortable with sending a video with other people to a Visual-Language Model (VLM) to get my question answered.",
-                type: "radio",
                 ...AgreeDisagreeOptions
             },
             {
                 title: "I am comfortable with others sending a video with me to a Visual-Language Model (VLM) to get their question answered.",
-                type: "radio",
                 ...AgreeDisagreeOptions
             },
             {

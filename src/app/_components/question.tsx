@@ -1,4 +1,4 @@
-import type { Question as QuestionType } from "../lib/survey-data";
+import type { Question as QuestionType } from "../lib/survey-types";
 
 interface QuestionProps {
     index: number;
@@ -12,7 +12,6 @@ const inputStyles = "border border-gray-300 rounded-md py-2 px-4 focus:outline-n
 export default function Question({ index, question, onChange, onOptionInputChange }: QuestionProps) {
     return (
         <div className="space-y-2">
-            {question.image && <img src={question.image} alt="Question related" className="max-w-full h-auto rounded-md" />}
             <p>{question.title}</p>
             {(question.type === "number" || question.type === "text") && (
                 <input
