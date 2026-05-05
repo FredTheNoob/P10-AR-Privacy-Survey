@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA, type SurveyData, type Question as QuestionType } from "./lib/survey-data";
+import { SURVEY_DATA, type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -12,6 +12,7 @@ export default function Home() {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
       let question = updatedQuestions[currentPage]![questionIdx];
+      if (!question || !isQuestion(question)) return prevQuestions;
       question!.answer = answer;
       return { ...prevQuestions, pages: updatedQuestions };
     });
@@ -47,8 +48,9 @@ export default function Home() {
     // validate answers
     let errorObj = { hasError: false };
     for (let question of questions.pages[currentPage]!) {
+      if (!isQuestion(question)) continue;
       question.error = undefined; // reset previous errors
-      if (!question.answer) {
+      if (isQuestionRequired(question) && !question.answer) {
         setQuestionError(question, "This question is required.", errorObj);
         continue;
       }
@@ -132,15 +134,19 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {SURVEY_DATA.pages[currentPage]?.map((question, index) =>
-              <Question
-                key={index}
-                index={index}
-                question={question}
-                onChange={onAnswerChange}
-                onOptionInputChange={onOptionInputAnswerChange}
-              />)
-            }
+            {SURVEY_DATA.pages[currentPage]?.map((page, index) =>
+              isQuestion(page) ? (
+                <Question
+                  key={index}
+                  index={index}
+                  question={page}
+                  onChange={onAnswerChange}
+                  onOptionInputChange={onOptionInputAnswerChange}
+                />
+              ) : (
+                page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)
+              )
+            )}
             <div className="flex space-x-3">
               <button
                 type="submit"
