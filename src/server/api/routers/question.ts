@@ -64,6 +64,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     }
   }
 
+  pages[0] = [];
   surveyData.pages = pages
 
   return surveyData;

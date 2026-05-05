@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Question from "./_components/question";
 import { SURVEY_DATA, type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
 import { api } from "~/trpc/react";
+import Spinner from "./_components/spinner";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
-  const { data } = api.question.getAll.useQuery();
+   const { data, isLoading } = api.question.getAll.useQuery();
 
-  const SURVEY_DATA: SurveyData = data ?? { pages: [] };
-  const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
+  const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+
+  useEffect(() => {
+    if (data) setQuestions(data);
+  }, [data]);
 
   const onAnswerChange = (questionIdx: number, answer: string) => {
     setQuestions((prevQuestions) => {
@@ -91,6 +95,7 @@ export default function Home() {
     if (errorObj.hasError) return;
 
     // Send the answers to the database
+    /*
     for (let question of questions.pages[currentPage]!) {
       if (question.type == "info") continue
           const createdResponse = api.response.create({
@@ -99,9 +104,14 @@ export default function Home() {
             questionId: "ID" //TODO: ADD QUESTION ID TO CLASS IN THE CODE
           })
     }
+          */
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
+  }
+
+  if (isLoading) {
+    return <Spinner />;
   }
 
   return (
@@ -147,7 +157,7 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {SURVEY_DATA.pages[currentPage]?.map((page, index) =>
+            {questions.pages[currentPage]?.map((page, index) => 
               isQuestion(page) ? (
                 <Question
                   key={index}
