@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useEffect, useState } from "react";
 import Question from "./_components/question";
 import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import { api } from "~/trpc/react";
@@ -12,7 +11,7 @@ import ConsentDialog from "./_components/consent-dialog";
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const { data, isLoading } = api.question.getAll.useQuery();
+  const { data, } = api.question.getAll.useQuery();
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
 
@@ -123,23 +122,37 @@ export default function Home() {
     }
     if (errorObj.hasError) return;
 
-
-    // Send the answers to the database
-    for (let question of questions.pages[currentPage]!) {
-      if (question.type === "info") continue
-      await createResponse.mutateAsync({
-        answer: question.answer ?? "",
-        userId: "cmost8ebm00042b58bt09oucw", // TODO: GET USERID FROM COOKIES / LOCAL STORAGE / SOMETHING ELSE
-        questionId: question.id ?? "", // Should never be an empty string
-      });
-    }
-
-
     localStorage.setItem("surveyAnswers", JSON.stringify(questions));
     localStorage.setItem("currentPage", (currentPage + 1).toString());
 
     if (currentPage === questions.pages.length - 1) {
       localStorage.setItem("surveyComplete", "true");
+
+      // Send the answers to the database
+      const userId = localStorage.getItem("user")
+      if (!userId) {
+        throw Error("User ID is null. Cannot save answers from user")
+      }
+
+      const storedAnswers = JSON.parse(
+        localStorage.getItem("surveyAnswers") ?? "{}"
+      ) as SurveyData;
+
+      for (const pages of storedAnswers.pages) {
+        for (const question of pages) {
+          if (question.type === "info") continue;
+
+          const answer = question.answer;
+
+          if (!question.id || answer === undefined) continue;
+          await createResponse.mutateAsync({
+            answer: answer,
+            userId: userId,
+            questionId: question.id,
+          });
+        }
+      }
+
       window.location.href = "/done";
       return;
     }
@@ -230,7 +243,7 @@ export default function Home() {
                 className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
                 onClick={goToNextPage}
               >
-                {currentPage === SURVEY_DATA.pages.length - 1 ? "Finish Survey" : "Next Page"}
+                {currentPage === questions.pages.length - 1 ? "Finish Survey" : "Next Page"}
               </button>
             </div>
           </>

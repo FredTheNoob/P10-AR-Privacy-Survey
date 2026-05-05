@@ -1,4 +1,5 @@
 export type BaseQuestion = {
+    id?: string
     title: string;
     visible?: boolean;
     required?: boolean;
@@ -35,6 +36,7 @@ export type TextQuestion = BaseQuestion & {
 };
 
 export type InformationPage = {
+    id?: string
     type: "info";
     lines: string[];
     image?: string;

@@ -35,7 +35,7 @@ type TextQuestion = BaseQuestion & {
 };
 
 export type InformationPage = {
-    id: string,
+    id?: string,
     type: "info";
     lines: string[];
 }
