@@ -2,19 +2,30 @@
 
 import { useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA, isQuestion, isQuestionRequired } from "./lib/survey-data";
+import { SURVEY_DATA, isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
 
-  const onAnswerChange = (questionIdx: number, answer: string) => {
+  const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
       let question = updatedQuestions[currentPage]![questionIdx];
       if (!question || !isQuestion(question)) return prevQuestions;
       question!.answer = answer;
+
+      if (question.type === "radio" && optionIdx !== undefined) {
+        const option = question.options[optionIdx]!;
+        if (option.type === "choose" && option.showNextQuestionOnClick !== undefined) {
+          let nextQuestion = updatedQuestions[currentPage]![questionIdx + 1];
+          if (nextQuestion && isQuestion(nextQuestion)) {
+            nextQuestion.visible = option.showNextQuestionOnClick;
+          }
+        }
+      }
+
       return { ...prevQuestions, pages: updatedQuestions };
     });
   };
@@ -50,6 +61,7 @@ export default function Home() {
     let errorObj = { hasError: false };
     for (let question of questions.pages[currentPage]!) {
       if (!isQuestion(question)) continue;
+      if (!isQuestionVisible(question)) continue;
       question.error = undefined; // reset previous errors
       if (isQuestionRequired(question) && !question.answer) {
         setQuestionError(question, "This question is required.", errorObj);
@@ -137,13 +149,15 @@ export default function Home() {
           <>
             {SURVEY_DATA.pages[currentPage]?.map((page, index) =>
               isQuestion(page) ? (
-                <Question
-                  key={index}
-                  index={index}
-                  question={page}
-                  onChange={onAnswerChange}
-                  onOptionInputChange={onOptionInputAnswerChange}
-                />
+                isQuestionVisible(page) && (
+                  <Question
+                    key={index}
+                    index={index}
+                    question={page}
+                    onChange={onAnswerChange}
+                    onOptionInputChange={onOptionInputAnswerChange}
+                  />
+                )
               ) : (
                 <div key={index} className="space-y-2">
                   {page.image && <img src={page.image} alt="Page image" className="max-w-full h-auto rounded-md" />}

@@ -1,5 +1,6 @@
 export type BaseQuestion = {
     title: string;
+    visible?: boolean;
     required?: boolean;
     answer?: string;
     error?: string;
@@ -8,6 +9,7 @@ export type BaseQuestion = {
 export type ChooseRadioOption = {
     type: "choose";
     value: string;
+    showNextQuestionOnClick?: boolean;
 }
 
 export type TextRadioOption = {
