@@ -91,7 +91,14 @@ export default function Home() {
     if (errorObj.hasError) return;
 
     // Send the answers to the database
-
+    for (let question of questions.pages[currentPage]!) {
+      if (question.type == "info") continue
+          const createdResponse = api.response.create({
+            answer: question.answer, 
+            userId: "ID", //TODO: GET USER ID FROM COOKIES/LOCAL STORAGE / SOMETHING ELSE
+            questionId: "ID" //TODO: ADD QUESTION ID TO CLASS IN THE CODE
+          })
+    }
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
