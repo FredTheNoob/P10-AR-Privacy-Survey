@@ -7,6 +7,7 @@ import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 import ConsentDialog from "./_components/consent-dialog";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
@@ -20,6 +21,7 @@ export default function Home() {
 
     const stored = localStorage.getItem("surveyAnswers");
     if (stored) setQuestions(JSON.parse(stored));
+    setIsLoading(false);
   }, []);
 
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
@@ -125,6 +127,14 @@ export default function Home() {
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
+  }
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <p>Loading...</p>
+      </main>
+    );
   }
 
   if (surveyComplete) {
