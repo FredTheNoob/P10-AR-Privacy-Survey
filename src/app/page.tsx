@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Question from "./_components/question";
 import { SURVEY_DATA, isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
@@ -8,7 +8,19 @@ import ConsentDialog from "./_components/consent-dialog";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
+  const [hasConsent, setHasConsent] = useState(false);
+  const [surveyComplete, setSurveyComplete] = useState(false);
+
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
+
+  useEffect(() => {
+    setCurrentPage(Number(localStorage.getItem("currentPage") || "0"));
+    setHasConsent(localStorage.getItem("hasConsent") === "true");
+    setSurveyComplete(localStorage.getItem("surveyComplete") === "true");
+
+    const stored = localStorage.getItem("surveyAnswers");
+    if (stored) setQuestions(JSON.parse(stored));
+  }, []);
 
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
@@ -101,13 +113,28 @@ export default function Home() {
     if (errorObj.hasError) return;
 
     console.log(questions);
+
+    localStorage.setItem("surveyAnswers", JSON.stringify(questions));
+    localStorage.setItem("currentPage", (currentPage + 1).toString());
+
+    if (currentPage === questions.pages.length - 1) {
+      localStorage.setItem("surveyComplete", "true");
+      window.location.href = "/done";
+      return;
+    }
+
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
   }
 
+  if (surveyComplete) {
+    window.location.href = "/done";
+    return null;
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      <ConsentDialog />
+      {!hasConsent && <ConsentDialog />}
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
         {currentPage === 0 && (
           <>
@@ -143,7 +170,7 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {SURVEY_DATA.pages[currentPage]?.map((page, index) =>
+            {questions.pages[currentPage]?.map((page, index) =>
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
                   <Question
@@ -174,7 +201,7 @@ export default function Home() {
                 className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
                 onClick={goToNextPage}
               >
-                Next Page
+                {currentPage === SURVEY_DATA.pages.length - 1 ? "Finish Survey" : "Next Page"}
               </button>
             </div>
           </>
