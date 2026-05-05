@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
+import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
+import ConsentDialog from "./_components/consent-dialog";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const { data, isLoading } = api.question.getAll.useQuery();
+  const [hasConsent, setHasConsent] = useState(false);
+  const [surveyComplete, setSurveyComplete] = useState(false);
+
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
   const createResponse = api.response.create.useMutation();
 
@@ -16,12 +23,33 @@ export default function Home() {
     if (data) setQuestions(data);
   }, [data]);
 
-  const onAnswerChange = (questionIdx: number, answer: string) => {
+  useEffect(() => {
+    setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
+    setHasConsent(localStorage.getItem("hasConsent") === "true");
+    setSurveyComplete(localStorage.getItem("surveyComplete") === "true");
+
+    const stored = localStorage.getItem("surveyAnswers");
+    if (stored) setQuestions(JSON.parse(stored) as SurveyData);
+    setIsLoading(false);
+  }, []);
+
+  const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      let question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]![questionIdx];
       if (!question || !isQuestion(question)) return prevQuestions;
-      question!.answer = answer;
+      question.answer = answer;
+
+      if (question.type === "radio" && optionIdx !== undefined) {
+        const option = question.options[optionIdx]!;
+        if (option.type === "choose" && option.showNextQuestionOnClick !== undefined) {
+          const nextQuestion = updatedQuestions[currentPage]![questionIdx + 1];
+          if (nextQuestion && isQuestion(nextQuestion)) {
+            nextQuestion.visible = option.showNextQuestionOnClick;
+          }
+        }
+      }
+
       return { ...prevQuestions, pages: updatedQuestions };
     });
   };
@@ -29,9 +57,9 @@ export default function Home() {
   const onOptionInputAnswerChange = (questionIdx: number, optionIdx: number, inputText: string) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      let question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]![questionIdx];
       if (question!.type !== "radio") return prevQuestions;
-      let option = question!.options[optionIdx]!;
+      const option = question!.options[optionIdx]!;
       if (option.type === "text") {
         option.inputText = inputText;
       }
@@ -54,9 +82,10 @@ export default function Home() {
 
   async function goToNextPage() {
     // validate answers
-    let errorObj = { hasError: false };
-    for (let question of questions.pages[currentPage]!) {
+    const errorObj = { hasError: false };
+    for (const question of questions.pages[currentPage]!) {
       if (!isQuestion(question)) continue;
+      if (!isQuestionVisible(question)) continue;
       question.error = undefined; // reset previous errors
       if (isQuestionRequired(question) && !question.answer) {
         setQuestionError(question, "This question is required.", errorObj);
@@ -105,16 +134,36 @@ export default function Home() {
       });
     }
 
+
+    localStorage.setItem("surveyAnswers", JSON.stringify(questions));
+    localStorage.setItem("currentPage", (currentPage + 1).toString());
+
+    if (currentPage === questions.pages.length - 1) {
+      localStorage.setItem("surveyComplete", "true");
+      window.location.href = "/done";
+      return;
+    }
+
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
   }
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <p>Loading...</p>
+      </main>
+    );
+  }
+
+  if (surveyComplete) {
+    window.location.href = "/done";
+    return null;
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
+      {!hasConsent && <ConsentDialog />}
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
         {currentPage === 0 && (
           <>
@@ -129,17 +178,11 @@ export default function Home() {
               <p>
                 If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
               </p>
-              <p>
-                https://www.youtube.com/watch?v=TCU-HCQJrQE
-              </p>
+              <video src="/intro-videos/1.mp4" controls className="max-w-1/5 h-auto rounded-md" />
               <p>
                 Here is another video showcasing possible VLM usage:
               </p>
-              https://youtu.be/oBZ8toFKZls?si=QQQF30qlVHWAJEeO&t=167
-
-              <p>
-                Please watch until the 3:04 mark
-              </p>
+              <video src="/intro-videos/2.mp4" controls className="max-w-1/5 h-auto rounded-md" />
 
               <p>
                 This survey takes approximately X minutes to complete.
@@ -158,15 +201,20 @@ export default function Home() {
           <>
             {questions.pages[currentPage]?.map((page, index) => 
               isQuestion(page) ? (
-                <Question
-                  key={index}
-                  index={index}
-                  question={page}
-                  onChange={onAnswerChange}
-                  onOptionInputChange={onOptionInputAnswerChange}
-                />
+                isQuestionVisible(page) && (
+                  <Question
+                    key={index}
+                    index={index}
+                    question={page}
+                    onChange={onAnswerChange}
+                    onOptionInputChange={onOptionInputAnswerChange}
+                  />
+                )
               ) : (
-                page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)
+                <div key={index} className="space-y-2">
+                  {page.image && <img src={page.image} alt="Page image" className="max-w-full h-auto rounded-md" />}
+                  {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                </div>
               )
             )}
             <div className="flex space-x-3">
@@ -182,7 +230,7 @@ export default function Home() {
                 className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
                 onClick={goToNextPage}
               >
-                Next Page
+                {currentPage === SURVEY_DATA.pages.length - 1 ? "Finish Survey" : "Next Page"}
               </button>
             </div>
           </>

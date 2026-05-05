@@ -1,9 +1,9 @@
-import type { Question as QuestionType} from "../lib/survey-data";
+import type { Question as QuestionType } from "../lib/survey-types";
 
 interface QuestionProps {
     index: number;
     question: QuestionType;
-    onChange: (questionId: number, answer: string) => void;
+    onChange: (questionId: number, answer: string, optionId?: number) => void;
     onOptionInputChange: (questionId: number, optionId: number, inputText: string) => void;
 }
 
@@ -12,11 +12,11 @@ const inputStyles = "border border-gray-300 rounded-md py-2 px-4 focus:outline-n
 export default function Question({ index, question, onChange, onOptionInputChange }: QuestionProps) {
     return (
         <div className="space-y-2">
-            {question.image && <img src={question.image} alt="Question related" className="max-w-full h-auto rounded-md" />}
             <p>{question.title}</p>
             {(question.type === "number" || question.type === "text") && (
                 <input
                     value={question.answer ?? ""}
+                    placeholder={question.type === "number" ? "Enter a number" : question.value}
                     className={inputStyles}
                     onChange={(e) => onChange(index, e.target.value)}
                 />
@@ -31,7 +31,7 @@ export default function Question({ index, question, onChange, onOptionInputChang
                                     name={question.title}
                                     value={option.value}
                                     checked={question.answer === option.value}
-                                    onChange={() => onChange(index, option.value)}
+                                    onChange={() => onChange(index, option.value, optionIndex)}
                                 />
                                 {option.value}
                             </label>
