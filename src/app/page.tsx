@@ -122,17 +122,11 @@ export default function Home() {
               <p>
                 If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
               </p>
-              <p>
-                https://www.youtube.com/watch?v=TCU-HCQJrQE
-              </p>
+              <video src="/intro-videos/1.mp4" controls className="max-w-1/5 h-auto rounded-md" />
               <p>
                 Here is another video showcasing possible VLM usage:
               </p>
-              https://youtu.be/oBZ8toFKZls?si=QQQF30qlVHWAJEeO&t=167
-
-              <p>
-                Please watch until the 3:04 mark
-              </p>
+              <video src="/intro-videos/2.mp4" controls className="max-w-1/5 h-auto rounded-md" />
 
               <p>
                 This survey takes approximately X minutes to complete.
