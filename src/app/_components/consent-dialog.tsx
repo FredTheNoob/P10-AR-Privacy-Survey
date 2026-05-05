@@ -6,7 +6,10 @@ import { useState } from "react";
 export default function ConsentDialog() {
   const [open, setOpen] = useState(true);
 
-  const handleAgree = () => setOpen(false);
+  const handleAgree = () => {
+    localStorage.setItem("hasConsent", "true");
+    setOpen(false);
+  };
   const handleDisagree = () => { window.location.href = "/done"; };
 
   return (
