@@ -1,5 +1,5 @@
 type BaseQuestion = {
-    title: string;
+    title?: string;
     image?: string;
     required?: boolean;
     answer?: string;

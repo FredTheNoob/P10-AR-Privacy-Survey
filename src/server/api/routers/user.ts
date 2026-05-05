@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const postRouter = createTRPCRouter({
+export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ }))
     .mutation(async ({ ctx, input }) => {

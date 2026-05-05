@@ -2,13 +2,15 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const postRouter = createTRPCRouter({
+export const responseRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ answer: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.create({
+      return ctx.db.response.create({
         data: {
-          
+          answer: input.answer,
+          userId: "",
+          questionId: "",
         },
       });
     }),

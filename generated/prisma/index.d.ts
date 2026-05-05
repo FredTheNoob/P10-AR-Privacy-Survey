@@ -3248,40 +3248,84 @@ export namespace Prisma {
 
   export type AggregateSurveyQuestion = {
     _count: SurveyQuestionCountAggregateOutputType | null
+    _avg: SurveyQuestionAvgAggregateOutputType | null
+    _sum: SurveyQuestionSumAggregateOutputType | null
     _min: SurveyQuestionMinAggregateOutputType | null
     _max: SurveyQuestionMaxAggregateOutputType | null
   }
 
+  export type SurveyQuestionAvgAggregateOutputType = {
+    pageIndex: number | null
+  }
+
+  export type SurveyQuestionSumAggregateOutputType = {
+    pageIndex: number | null
+  }
+
   export type SurveyQuestionMinAggregateOutputType = {
     id: string | null
-    question: string | null
+    title: string | null
+    type: string | null
+    required: boolean | null
+    pageIndex: number | null
+    imageName: string | null
   }
 
   export type SurveyQuestionMaxAggregateOutputType = {
     id: string | null
-    question: string | null
+    title: string | null
+    type: string | null
+    required: boolean | null
+    pageIndex: number | null
+    imageName: string | null
   }
 
   export type SurveyQuestionCountAggregateOutputType = {
     id: number
-    question: number
+    title: number
+    type: number
+    required: number
+    config: number
+    pageIndex: number
+    imageName: number
     _all: number
   }
 
 
+  export type SurveyQuestionAvgAggregateInputType = {
+    pageIndex?: true
+  }
+
+  export type SurveyQuestionSumAggregateInputType = {
+    pageIndex?: true
+  }
+
   export type SurveyQuestionMinAggregateInputType = {
     id?: true
-    question?: true
+    title?: true
+    type?: true
+    required?: true
+    pageIndex?: true
+    imageName?: true
   }
 
   export type SurveyQuestionMaxAggregateInputType = {
     id?: true
-    question?: true
+    title?: true
+    type?: true
+    required?: true
+    pageIndex?: true
+    imageName?: true
   }
 
   export type SurveyQuestionCountAggregateInputType = {
     id?: true
-    question?: true
+    title?: true
+    type?: true
+    required?: true
+    config?: true
+    pageIndex?: true
+    imageName?: true
     _all?: true
   }
 
@@ -3323,6 +3367,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SurveyQuestionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SurveyQuestionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SurveyQuestionMinAggregateInputType
@@ -3353,14 +3409,23 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SurveyQuestionCountAggregateInputType | true
+    _avg?: SurveyQuestionAvgAggregateInputType
+    _sum?: SurveyQuestionSumAggregateInputType
     _min?: SurveyQuestionMinAggregateInputType
     _max?: SurveyQuestionMaxAggregateInputType
   }
 
   export type SurveyQuestionGroupByOutputType = {
     id: string
-    question: string
+    title: string | null
+    type: string
+    required: boolean | null
+    config: JsonValue | null
+    pageIndex: number | null
+    imageName: string | null
     _count: SurveyQuestionCountAggregateOutputType | null
+    _avg: SurveyQuestionAvgAggregateOutputType | null
+    _sum: SurveyQuestionSumAggregateOutputType | null
     _min: SurveyQuestionMinAggregateOutputType | null
     _max: SurveyQuestionMaxAggregateOutputType | null
   }
@@ -3381,27 +3446,47 @@ export namespace Prisma {
 
   export type SurveyQuestionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    question?: boolean
+    title?: boolean
+    type?: boolean
+    required?: boolean
+    config?: boolean
+    pageIndex?: boolean
+    imageName?: boolean
     responses?: boolean | SurveyQuestion$responsesArgs<ExtArgs>
     _count?: boolean | SurveyQuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyQuestion"]>
 
   export type SurveyQuestionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    question?: boolean
+    title?: boolean
+    type?: boolean
+    required?: boolean
+    config?: boolean
+    pageIndex?: boolean
+    imageName?: boolean
   }, ExtArgs["result"]["surveyQuestion"]>
 
   export type SurveyQuestionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    question?: boolean
+    title?: boolean
+    type?: boolean
+    required?: boolean
+    config?: boolean
+    pageIndex?: boolean
+    imageName?: boolean
   }, ExtArgs["result"]["surveyQuestion"]>
 
   export type SurveyQuestionSelectScalar = {
     id?: boolean
-    question?: boolean
+    title?: boolean
+    type?: boolean
+    required?: boolean
+    config?: boolean
+    pageIndex?: boolean
+    imageName?: boolean
   }
 
-  export type SurveyQuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "question", ExtArgs["result"]["surveyQuestion"]>
+  export type SurveyQuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "type" | "required" | "config" | "pageIndex" | "imageName", ExtArgs["result"]["surveyQuestion"]>
   export type SurveyQuestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     responses?: boolean | SurveyQuestion$responsesArgs<ExtArgs>
     _count?: boolean | SurveyQuestionCountOutputTypeDefaultArgs<ExtArgs>
@@ -3416,7 +3501,12 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      question: string
+      title: string | null
+      type: string
+      required: boolean | null
+      config: Prisma.JsonValue | null
+      pageIndex: number | null
+      imageName: string | null
     }, ExtArgs["result"]["surveyQuestion"]>
     composites: {}
   }
@@ -3842,7 +3932,12 @@ export namespace Prisma {
    */
   interface SurveyQuestionFieldRefs {
     readonly id: FieldRef<"SurveyQuestion", 'String'>
-    readonly question: FieldRef<"SurveyQuestion", 'String'>
+    readonly title: FieldRef<"SurveyQuestion", 'String'>
+    readonly type: FieldRef<"SurveyQuestion", 'String'>
+    readonly required: FieldRef<"SurveyQuestion", 'Boolean'>
+    readonly config: FieldRef<"SurveyQuestion", 'Json'>
+    readonly pageIndex: FieldRef<"SurveyQuestion", 'Int'>
+    readonly imageName: FieldRef<"SurveyQuestion", 'String'>
   }
     
 
@@ -5373,7 +5468,12 @@ export namespace Prisma {
 
   export const SurveyQuestionScalarFieldEnum: {
     id: 'id',
-    question: 'question'
+    title: 'title',
+    type: 'type',
+    required: 'required',
+    config: 'config',
+    pageIndex: 'pageIndex',
+    imageName: 'imageName'
   };
 
   export type SurveyQuestionScalarFieldEnum = (typeof SurveyQuestionScalarFieldEnum)[keyof typeof SurveyQuestionScalarFieldEnum]
@@ -5398,12 +5498,37 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -5450,6 +5575,27 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -5564,13 +5710,23 @@ export namespace Prisma {
     OR?: SurveyQuestionWhereInput[]
     NOT?: SurveyQuestionWhereInput | SurveyQuestionWhereInput[]
     id?: StringFilter<"SurveyQuestion"> | string
-    question?: StringFilter<"SurveyQuestion"> | string
+    title?: StringNullableFilter<"SurveyQuestion"> | string | null
+    type?: StringFilter<"SurveyQuestion"> | string
+    required?: BoolNullableFilter<"SurveyQuestion"> | boolean | null
+    config?: JsonNullableFilter<"SurveyQuestion">
+    pageIndex?: IntNullableFilter<"SurveyQuestion"> | number | null
+    imageName?: StringNullableFilter<"SurveyQuestion"> | string | null
     responses?: ResponseListRelationFilter
   }
 
   export type SurveyQuestionOrderByWithRelationInput = {
     id?: SortOrder
-    question?: SortOrder
+    title?: SortOrderInput | SortOrder
+    type?: SortOrder
+    required?: SortOrderInput | SortOrder
+    config?: SortOrderInput | SortOrder
+    pageIndex?: SortOrderInput | SortOrder
+    imageName?: SortOrderInput | SortOrder
     responses?: ResponseOrderByRelationAggregateInput
   }
 
@@ -5579,16 +5735,28 @@ export namespace Prisma {
     AND?: SurveyQuestionWhereInput | SurveyQuestionWhereInput[]
     OR?: SurveyQuestionWhereInput[]
     NOT?: SurveyQuestionWhereInput | SurveyQuestionWhereInput[]
-    question?: StringFilter<"SurveyQuestion"> | string
+    title?: StringNullableFilter<"SurveyQuestion"> | string | null
+    type?: StringFilter<"SurveyQuestion"> | string
+    required?: BoolNullableFilter<"SurveyQuestion"> | boolean | null
+    config?: JsonNullableFilter<"SurveyQuestion">
+    pageIndex?: IntNullableFilter<"SurveyQuestion"> | number | null
+    imageName?: StringNullableFilter<"SurveyQuestion"> | string | null
     responses?: ResponseListRelationFilter
   }, "id">
 
   export type SurveyQuestionOrderByWithAggregationInput = {
     id?: SortOrder
-    question?: SortOrder
+    title?: SortOrderInput | SortOrder
+    type?: SortOrder
+    required?: SortOrderInput | SortOrder
+    config?: SortOrderInput | SortOrder
+    pageIndex?: SortOrderInput | SortOrder
+    imageName?: SortOrderInput | SortOrder
     _count?: SurveyQuestionCountOrderByAggregateInput
+    _avg?: SurveyQuestionAvgOrderByAggregateInput
     _max?: SurveyQuestionMaxOrderByAggregateInput
     _min?: SurveyQuestionMinOrderByAggregateInput
+    _sum?: SurveyQuestionSumOrderByAggregateInput
   }
 
   export type SurveyQuestionScalarWhereWithAggregatesInput = {
@@ -5596,7 +5764,12 @@ export namespace Prisma {
     OR?: SurveyQuestionScalarWhereWithAggregatesInput[]
     NOT?: SurveyQuestionScalarWhereWithAggregatesInput | SurveyQuestionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SurveyQuestion"> | string
-    question?: StringWithAggregatesFilter<"SurveyQuestion"> | string
+    title?: StringNullableWithAggregatesFilter<"SurveyQuestion"> | string | null
+    type?: StringWithAggregatesFilter<"SurveyQuestion"> | string
+    required?: BoolNullableWithAggregatesFilter<"SurveyQuestion"> | boolean | null
+    config?: JsonNullableWithAggregatesFilter<"SurveyQuestion">
+    pageIndex?: IntNullableWithAggregatesFilter<"SurveyQuestion"> | number | null
+    imageName?: StringNullableWithAggregatesFilter<"SurveyQuestion"> | string | null
   }
 
   export type ResponseWhereInput = {
@@ -5744,41 +5917,76 @@ export namespace Prisma {
 
   export type SurveyQuestionCreateInput = {
     id?: string
-    question: string
+    title?: string | null
+    type: string
+    required?: boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: number | null
+    imageName?: string | null
     responses?: ResponseCreateNestedManyWithoutQuestionInput
   }
 
   export type SurveyQuestionUncheckedCreateInput = {
     id?: string
-    question: string
+    title?: string | null
+    type: string
+    required?: boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: number | null
+    imageName?: string | null
     responses?: ResponseUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type SurveyQuestionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
     responses?: ResponseUpdateManyWithoutQuestionNestedInput
   }
 
   export type SurveyQuestionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
     responses?: ResponseUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type SurveyQuestionCreateManyInput = {
     id?: string
-    question: string
+    title?: string | null
+    type: string
+    required?: boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: number | null
+    imageName?: string | null
   }
 
   export type SurveyQuestionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SurveyQuestionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ResponseCreateInput = {
@@ -5974,19 +6182,167 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type SurveyQuestionCountOrderByAggregateInput = {
     id?: SortOrder
-    question?: SortOrder
+    title?: SortOrder
+    type?: SortOrder
+    required?: SortOrder
+    config?: SortOrder
+    pageIndex?: SortOrder
+    imageName?: SortOrder
+  }
+
+  export type SurveyQuestionAvgOrderByAggregateInput = {
+    pageIndex?: SortOrder
   }
 
   export type SurveyQuestionMaxOrderByAggregateInput = {
     id?: SortOrder
-    question?: SortOrder
+    title?: SortOrder
+    type?: SortOrder
+    required?: SortOrder
+    pageIndex?: SortOrder
+    imageName?: SortOrder
   }
 
   export type SurveyQuestionMinOrderByAggregateInput = {
     id?: SortOrder
-    question?: SortOrder
+    title?: SortOrder
+    type?: SortOrder
+    required?: SortOrder
+    pageIndex?: SortOrder
+    imageName?: SortOrder
+  }
+
+  export type SurveyQuestionSumOrderByAggregateInput = {
+    pageIndex?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -6093,6 +6449,22 @@ export namespace Prisma {
     connectOrCreate?: ResponseCreateOrConnectWithoutQuestionInput | ResponseCreateOrConnectWithoutQuestionInput[]
     createMany?: ResponseCreateManyQuestionInputEnvelope
     connect?: ResponseWhereUniqueInput | ResponseWhereUniqueInput[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ResponseUpdateManyWithoutQuestionNestedInput = {
@@ -6245,6 +6617,111 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type ResponseCreateWithoutUserInput = {
     id?: string
     answer: string
@@ -6353,12 +6830,22 @@ export namespace Prisma {
 
   export type SurveyQuestionCreateWithoutResponsesInput = {
     id?: string
-    question: string
+    title?: string | null
+    type: string
+    required?: boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: number | null
+    imageName?: string | null
   }
 
   export type SurveyQuestionUncheckedCreateWithoutResponsesInput = {
     id?: string
-    question: string
+    title?: string | null
+    type: string
+    required?: boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: number | null
+    imageName?: string | null
   }
 
   export type SurveyQuestionCreateOrConnectWithoutResponsesInput = {
@@ -6400,12 +6887,22 @@ export namespace Prisma {
 
   export type SurveyQuestionUpdateWithoutResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SurveyQuestionUncheckedUpdateWithoutResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    question?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    required?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    config?: NullableJsonNullValueInput | InputJsonValue
+    pageIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    imageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ResponseCreateManyUserInput = {

@@ -1,4 +1,4 @@
-import type { Question as QuestionType } from "../lib/survey-data";
+import type { Question as QuestionType} from "../lib/survey-data";
 
 interface QuestionProps {
     index: number;

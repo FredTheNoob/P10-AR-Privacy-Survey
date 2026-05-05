@@ -28,8 +28,17 @@ model User {
 }
 
 model SurveyQuestion {
-  id       String @id @default(cuid())
-  question String
+  id String @id @default(cuid())
+
+  title    String?
+  type     String // "text" | "number" | "radio" | "info"
+  required Boolean?
+
+  config Json? // all extra dynamic fields (options, min/max, etc.)
+
+  pageIndex Int? // optional: keeps your page structure
+
+  imageName String?
 
   responses Response[]
 }
