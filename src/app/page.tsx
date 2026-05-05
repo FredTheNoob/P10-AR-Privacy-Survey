@@ -4,6 +4,7 @@ import { useState } from "react";
 import Question from "./_components/question";
 import { SURVEY_DATA, isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
+import ConsentDialog from "./_components/consent-dialog";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -106,6 +107,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
+      <ConsentDialog />
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
         {currentPage === 0 && (
           <>

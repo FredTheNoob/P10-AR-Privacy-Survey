@@ -125,7 +125,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\10. semester\\P10\\P10-AR-Privacy-Survey\\generated\\prisma",
+      "value": "/home/fred/Programming/p10-ar-privacy-study/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -134,12 +134,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\10. semester\\P10\\P10-AR-Privacy-Survey\\prisma\\schema.prisma",
+    "sourceFilePath": "/home/fred/Programming/p10-ar-privacy-study/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
