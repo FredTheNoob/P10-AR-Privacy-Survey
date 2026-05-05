@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA, type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
+import { SURVEY_DATA, isQuestion, isQuestionRequired } from "./lib/survey-data";
+import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -144,7 +145,10 @@ export default function Home() {
                   onOptionInputChange={onOptionInputAnswerChange}
                 />
               ) : (
-                page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)
+                <div key={index} className="space-y-2">
+                  {page.image && <img src={page.image} alt="Page image" className="max-w-full h-auto rounded-md" />}
+                  {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                </div>
               )
             )}
             <div className="flex space-x-3">
