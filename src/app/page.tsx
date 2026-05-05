@@ -2,17 +2,25 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA, isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
+import { api } from "~/trpc/react";
+import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 import ConsentDialog from "./_components/consent-dialog";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const { data, } = api.question.getAll.useQuery();
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
 
-  const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
+  const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+  const createResponse = api.response.create.useMutation();
+
+  useEffect(() => {
+    if (data) setQuestions(data);
+  }, [data]);
 
   useEffect(() => {
     setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
@@ -71,7 +79,7 @@ export default function Home() {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   }
 
-  function goToNextPage() {
+  async function goToNextPage() {
     // validate answers
     const errorObj = { hasError: false };
     for (const question of questions.pages[currentPage]!) {
@@ -114,13 +122,37 @@ export default function Home() {
     }
     if (errorObj.hasError) return;
 
-    console.log(questions);
-
     localStorage.setItem("surveyAnswers", JSON.stringify(questions));
     localStorage.setItem("currentPage", (currentPage + 1).toString());
 
     if (currentPage === questions.pages.length - 1) {
       localStorage.setItem("surveyComplete", "true");
+
+      // Send the answers to the database
+      const userId = localStorage.getItem("user")
+      if (!userId) {
+        throw Error("User ID is null. Cannot save answers from user")
+      }
+
+      const storedAnswers = JSON.parse(
+        localStorage.getItem("surveyAnswers") ?? "{}"
+      ) as SurveyData;
+
+      for (const pages of storedAnswers.pages) {
+        for (const question of pages) {
+          if (question.type === "info") continue;
+
+          const answer = question.answer;
+
+          if (!question.id || answer === undefined) continue;
+          await createResponse.mutateAsync({
+            answer: answer,
+            userId: userId,
+            questionId: question.id,
+          });
+        }
+      }
+
       window.location.href = "/done";
       return;
     }
@@ -180,7 +212,7 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {questions.pages[currentPage]?.map((page, index) =>
+            {questions.pages[currentPage]?.map((page, index) => 
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
                   <Question
@@ -211,7 +243,7 @@ export default function Home() {
                 className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
                 onClick={goToNextPage}
               >
-                {currentPage === SURVEY_DATA.pages.length - 1 ? "Finish Survey" : "Next Page"}
+                {currentPage === questions.pages.length - 1 ? "Finish Survey" : "Next Page"}
               </button>
             </div>
           </>
