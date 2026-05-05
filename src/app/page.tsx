@@ -8,6 +8,8 @@ import { api } from "~/trpc/react";
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const { data } = api.question.getAll.useQuery();
+
+  const SURVEY_DATA: SurveyData = data ?? { pages: [] };
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
 
   const onAnswerChange = (questionIdx: number, answer: string) => {
@@ -87,6 +89,9 @@ export default function Home() {
       }
     }
     if (errorObj.hasError) return;
+
+    // Send the answers to the database
+
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);

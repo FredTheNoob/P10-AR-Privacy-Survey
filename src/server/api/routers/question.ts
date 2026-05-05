@@ -78,6 +78,5 @@ export const surveyRouter = createTRPCRouter({
     });
 
     return toSurveyData(rows)
-
   }),
 });
