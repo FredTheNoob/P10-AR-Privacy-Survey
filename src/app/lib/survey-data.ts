@@ -1,4 +1,5 @@
 type BaseQuestion = {
+    id?: string,
     title?: string;
     image?: string;
     required?: boolean;
@@ -34,6 +35,7 @@ type TextQuestion = BaseQuestion & {
 };
 
 type InformationPage = {
+    id?: string,
     type: "info";
     lines: string[];
 }

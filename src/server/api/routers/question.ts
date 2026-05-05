@@ -41,11 +41,13 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     // ✅ Safe push with correct typing
     if (row.type === "info") {
       (pages[page] as InformationPage[]).push({
+        id: row.id,
         type: "info",
         lines: row.config?.lines ?? [],
       });
     } else {
       (pages[page] as Question[]).push({
+        id: row.id,
         title: row.title ?? "",
         type: row.type as any,
         image: row.imageName ?? undefined,

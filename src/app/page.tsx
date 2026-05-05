@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { SURVEY_DATA, type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
+import { type SurveyData, type Question as QuestionType, isQuestion, isQuestionRequired } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
-   const { data, isLoading } = api.question.getAll.useQuery();
-
+  const { data, isLoading } = api.question.getAll.useQuery();
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+  const createResponse = api.response.create.useMutation();
 
   useEffect(() => {
     if (data) setQuestions(data);
@@ -52,7 +52,7 @@ export default function Home() {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   }
 
-  function goToNextPage() {
+  async function goToNextPage() {
     // validate answers
     let errorObj = { hasError: false };
     for (let question of questions.pages[currentPage]!) {
@@ -94,17 +94,16 @@ export default function Home() {
     }
     if (errorObj.hasError) return;
 
+
     // Send the answers to the database
-    /*
     for (let question of questions.pages[currentPage]!) {
-      if (question.type == "info") continue
-          const createdResponse = api.response.create({
-            answer: question.answer, 
-            userId: "ID", //TODO: GET USER ID FROM COOKIES/LOCAL STORAGE / SOMETHING ELSE
-            questionId: "ID" //TODO: ADD QUESTION ID TO CLASS IN THE CODE
-          })
+      if (question.type === "info") continue
+      await createResponse.mutateAsync({
+        answer: question.answer ?? "",
+        userId: "cmost8ebm00042b58bt09oucw", // TODO: GET USERID FROM COOKIES / LOCAL STORAGE / SOMETHING ELSE
+        questionId: question.id ?? "", // Should never be an empty string
+      });
     }
-          */
 
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
