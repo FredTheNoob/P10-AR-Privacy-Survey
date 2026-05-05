@@ -1,4 +1,4 @@
-import * as SurveyTypes from "./survey-types";
+import type * as SurveyTypes from "./survey-types";
 
 export const AgreeDisagreeOptions: { options: SurveyTypes.ChooseRadioOption[], type: "radio" } = {
     type: "radio",

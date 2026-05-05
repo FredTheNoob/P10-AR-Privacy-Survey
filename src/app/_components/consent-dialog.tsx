@@ -13,7 +13,7 @@ export default function ConsentDialog() {
   const handleDisagree = () => { window.location.href = "/done"; };
 
   return (
-    <Dialog.Root open={open} onOpenChange={() => {}}>
+    <Dialog.Root open={open}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
         <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,700px)]">
@@ -46,7 +46,7 @@ export default function ConsentDialog() {
 
               <p><strong>Research Purpose</strong></p>
               <p>
-                We invite you to participate in a survey study. Before you decide to participate, please ensure you understand the purpose and details of this study. Carefully read the information below, and if you have any unclear points or need more information, please ask the researchers. The purpose of this study is to evaluate people's potential concerns or discomforts towards everyday AR systems and whether censoring methods are effective in mitigating this.
+                We invite you to participate in a survey study. Before you decide to participate, please ensure you understand the purpose and details of this study. Carefully read the information below, and if you have any unclear points or need more information, please ask the researchers. The purpose of this study is to evaluate people&apos;s potential concerns or discomforts towards everyday AR systems and whether censoring methods are effective in mitigating this.
               </p>
 
               <p><strong>Research Risks</strong></p>
@@ -74,7 +74,7 @@ export default function ConsentDialog() {
                 I have read and understood the provided information and have had the opportunity to ask questions. I voluntarily participate in the survey and can withdraw at any time without reason.
               </p>
               <p>
-                If you agree and acknowledge the above content, please click the "Agree" button below to start answering the questions. If you do not agree or acknowledge the above content, please click the "Disagree" button below to discontinue participation in this survey project.
+                If you agree and acknowledge the above content, please click the &quot;Agree&quot; button below to start answering the questions. If you do not agree or acknowledge the above content, please click the &quot;Disagree&quot; button below to discontinue participation in this survey project.
               </p>
             </div>
             <div className="mt-6 flex justify-end gap-3">

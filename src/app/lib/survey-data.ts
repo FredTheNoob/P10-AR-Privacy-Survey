@@ -1,5 +1,5 @@
 import { AgreeDisagreeOptions, ScenarioQuestions } from "./common-survey-data";
-import * as SurveyTypes from "./survey-types";
+import type * as SurveyTypes from "./survey-types";
 
 export function isQuestion(page: SurveyTypes.Question | SurveyTypes.InformationPage): page is SurveyTypes.Question {
     return (page as SurveyTypes.Question).title !== undefined;

@@ -15,26 +15,26 @@ export default function Home() {
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
 
   useEffect(() => {
-    setCurrentPage(Number(localStorage.getItem("currentPage") || "0"));
+    setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
     setHasConsent(localStorage.getItem("hasConsent") === "true");
     setSurveyComplete(localStorage.getItem("surveyComplete") === "true");
 
     const stored = localStorage.getItem("surveyAnswers");
-    if (stored) setQuestions(JSON.parse(stored));
+    if (stored) setQuestions(JSON.parse(stored) as SurveyData);
     setIsLoading(false);
   }, []);
 
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      let question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]![questionIdx];
       if (!question || !isQuestion(question)) return prevQuestions;
-      question!.answer = answer;
+      question.answer = answer;
 
       if (question.type === "radio" && optionIdx !== undefined) {
         const option = question.options[optionIdx]!;
         if (option.type === "choose" && option.showNextQuestionOnClick !== undefined) {
-          let nextQuestion = updatedQuestions[currentPage]![questionIdx + 1];
+          const nextQuestion = updatedQuestions[currentPage]![questionIdx + 1];
           if (nextQuestion && isQuestion(nextQuestion)) {
             nextQuestion.visible = option.showNextQuestionOnClick;
           }
@@ -48,9 +48,9 @@ export default function Home() {
   const onOptionInputAnswerChange = (questionIdx: number, optionIdx: number, inputText: string) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      let question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]![questionIdx];
       if (question!.type !== "radio") return prevQuestions;
-      let option = question!.options[optionIdx]!;
+      const option = question!.options[optionIdx]!;
       if (option.type === "text") {
         option.inputText = inputText;
       }
@@ -73,8 +73,8 @@ export default function Home() {
 
   function goToNextPage() {
     // validate answers
-    let errorObj = { hasError: false };
-    for (let question of questions.pages[currentPage]!) {
+    const errorObj = { hasError: false };
+    for (const question of questions.pages[currentPage]!) {
       if (!isQuestion(question)) continue;
       if (!isQuestionVisible(question)) continue;
       question.error = undefined; // reset previous errors
