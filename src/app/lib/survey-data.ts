@@ -9,6 +9,10 @@ export function isQuestionRequired(question: SurveyTypes.Question): boolean {
     return question.required === undefined || question.required === true;
 }
 
+export function isQuestionVisible(question: SurveyTypes.Question): boolean {
+    return question.visible === undefined || question.visible === true;
+}
+
 function randomizeQuestionPairs(questionPages: SurveyTypes.SurveyContent[][]): SurveyTypes.SurveyContent[][] {
     const paired: [SurveyTypes.SurveyContent[], SurveyTypes.SurveyContent[]][] = []; // A 3D array holds our pairs
 
@@ -68,28 +72,33 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 options: [
                     {
                         type: "choose",
-                        value: "No experience"
+                        value: "No experience",
+                        showNextQuestionOnClick: false
                     },
                     {
                         type: "choose",
-                        value: "Tried it once or twice"
+                        value: "Tried it once or twice",
+                        showNextQuestionOnClick: true
                     },
                     {
                         type: "choose",
-                        value: "Occasional use (Rougly once a month or once a week)"
+                        value: "Occasional use (Rougly once a month or once a week)",
+                        showNextQuestionOnClick: true
                     },
                     {
                         type: "choose",
-                        value: "Regular use (Several times a week"
+                        value: "Regular use (Several times a week",
+                        showNextQuestionOnClick: true
                     },
                     {
                         type: "choose",
-                        value: "Frequent / expert use (I use it daily or multiple times per day)"
+                        value: "Frequent / expert use (I use it daily or multiple times per day)",
+                        showNextQuestionOnClick: true
                     }
                 ]
             },
-            // TODO: If participants answer anything but “no experience” in previous question, they get this question:
             {
+                visible: false,
                 title: "Have you used any AI in your usage of AR?",
                 type: "radio",
                 options: [
@@ -114,10 +123,38 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
             },
             {
                 title: "I am concerned that personal information may influence the answers the Visual-Language Model (VLM) gives me.",
-                ...AgreeDisagreeOptions
+                type: "radio",
+                options: [
+                    {
+                        type: "choose",
+                        value: "Strongly disagree",
+                        showNextQuestionOnClick: false
+                    },
+                    {
+                        type: "choose",
+                        value: "Disagree",
+                        showNextQuestionOnClick: false
+                    },
+                    {
+                        type: "choose",
+                        value: "Neutral",
+                        showNextQuestionOnClick: false
+                    },
+                    {
+                        type: "choose",
+                        value: "Agree",
+                        showNextQuestionOnClick: true
+                    },
+                    {
+                        type: "choose",
+                        value: "Strongly agree",
+                        showNextQuestionOnClick: true
+                    }
+                ]
             },
             // TODO: If they answer “agree” or “strongly agree” in previous question, they get this question:
             {
+                visible: false,
                 title: "What personal information concerns you the most?",
                 type: "text",
                 value: "Gender, ethnic, age, etc.",
