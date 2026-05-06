@@ -61,6 +61,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
         }),
         ...(row.type === "text" && {
           value: row.config?.value,
+          multiline: row.config?.multiline,
         }),
       });
     }

@@ -113,16 +113,17 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 ]
             },
             {
-                title: "I am aware of how this AR system processes and stores my data.",
+                title: "I am aware of how AR systems process and store my data.",
                 ...AgreeDisagreeOptions
             },
             {
                 title: "Which types of data are you most concerned about sharing?",
                 type: "text",
-                value: "For instance sharing your face, private living space, etc.",
+                value: "",
+                multiline: true
             },
             {
-                title: "I am concerned that personal information may influence the answers the Visual-Language Model (VLM) gives me.",
+                title: "I am concerned that personal information may influence the answers the AI gives me.",
                 type: "radio",
                 options: [
                     {
@@ -157,7 +158,8 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 visible: false,
                 title: "What personal information concerns you the most?",
                 type: "text",
-                value: "Gender, ethnic, age, etc.",
+                value: "",
+                multiline: true
             },
         ],
         [
@@ -165,8 +167,8 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 type: "info",
                 lines: [
                     "To study privacy perceptions in realistic scenarios, we recorded a set of first-person videos using wearable smart glasses, specifically the Ray-Ban Meta Wayfare Gen 2 Glasses. The glasses are equipped with an embedded camera that enables hands-free video recording, closely reflecting how AR systems may passively observe and process visual information in real-world use.",
-                    "The recordings capture everyday situations from the perspective of the wearer, including interactions in both public and private environments. The scenarios were designed to represent common use cases of AR systems, such as question answering, object removal, etc.",
-                    "These recordings are used solely for research purposes. In this survey the participants will be shown a set of images from these recordings that allows participants to evaluate privacy implications in a realistic AR context."
+                    "The recordings capture everyday situations from the perspective of the wearer, including interactions in both public and private environments.",
+                    "These recordings are used solely for research purposes. In this survey you will be shown a set of images from these recordings to evaluate privacy implications in a realistic AR context."
                 ]
             }
         ],
@@ -176,7 +178,8 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                     "You are at the supermarket looking for cheap fruit",
                     "What is the cheapest fruit?",
                     ["The cheapest fruit is bananas at $0.99 per pound."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+                    true
                 ),
                 ...ScenarioQuestions(
                     "You are going for a walk and stumble upon a pond.",
@@ -212,37 +215,32 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
         ),
         [
             {
-                title: "I am comfortable with sending a video with other people to a Visual-Language Model (VLM) to get my question answered.",
+                title: "I am comfortable with sending a video/image with other people to an AI to get my question answered.",
                 ...AgreeDisagreeOptions
             },
             {
-                title: "I am comfortable with others sending a video with me to a Visual-Language Model (VLM) to get their question answered.",
+                title: "I am comfortable with others sending a video/image with me to an AI to get their question answered.",
                 ...AgreeDisagreeOptions
             },
             {
+                required: false,
                 title: "Which privacy-preserving techniques are most effective at protecting user privacy? Rank them.",
-                type: "radio",
+                type: "rank",
                 options: [
-                    {
-                        type: "choose",
-                        value: "None"
-                    },
-                    {
-                        type: "choose",
-                        value: "Morphing / replacing"
-                    },
-                    {
-                        type: "choose",
-                        value: "Blur"
-                    },
-                    {
-                        type: "choose",
-                        value: "Black box"
-                    },
+                    "None",
+                    "Replacing",
+                    "Blur",
+                    "Black box"
                 ]
             },
             {
-                title: "Does your willingness to share videos with a Vision-Language Model (VLM) depend on your relationship with the people in the video?",
+                title: "Why did you pick this ranking?",
+                type: "text",
+                value: "",
+                multiline: true
+            },
+            {
+                title: "Does your willingness to share videos/images with an AI depend on your relationship with the people in the video/image?",
                 type: "radio",
                 options: [
                     {
@@ -268,10 +266,17 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 ]
             },
             {
+                title: "What privacy sensitive information do you want to remove from a video/image?",
+                type: "text",
+                value: "",
+                multiline: true
+            },
+            {
                 required: false,
                 title: "Any further comments?",
                 type: "text",
                 value: "",
+                multiline: true
             },
         ]
     ]

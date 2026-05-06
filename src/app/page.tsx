@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible, SURVEY_DATA } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
@@ -15,12 +15,13 @@ export default function Home() {
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
 
-  const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+  // const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+  const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
   const createResponse = api.response.create.useMutation();
 
-  useEffect(() => {
-    if (data) setQuestions(data);
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) setQuestions(data);
+  // }, [data]);
 
   useEffect(() => {
     setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
@@ -65,6 +66,24 @@ export default function Home() {
       return { ...prevQuestions, pages: updatedQuestions };
     });
   }
+
+  const onRankReorder = (questionIdx: number, nextOptions: string[]) => {
+    setQuestions((prevQuestions) => {
+      const updatedPages = [...prevQuestions.pages];
+      const current = updatedPages[currentPage];
+      if (!current) return prevQuestions;
+
+      const updatedPage = [...current];
+      const question = updatedPage[questionIdx];
+
+      if (!question || question.type !== "rank") return prevQuestions;
+
+      updatedPage[questionIdx] = { ...question, options: nextOptions };
+      updatedPages[currentPage] = updatedPage;
+
+      return { ...prevQuestions, pages: updatedPages };
+    });
+  };
 
   function setQuestionError(question: QuestionType, error: string, errorObj: { hasError: boolean }) {
     setQuestions((prevQuestions) => {
@@ -185,17 +204,25 @@ export default function Home() {
             </h1>
             <div className="space-y-5">
               <p>
-                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Vision-Language Models (VLMs) process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
-                This survey aims to explore how users perceive privacy in the context of AR and VLMs. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
+                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Artificial Intelligense (AI) can process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
+                This survey aims to explore how users perceive privacy in the context of AR and AI. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
               </p>
               <p>
                 If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
               </p>
-              <video src="/intro-videos/1.mp4" controls className="max-w-1/5 h-auto rounded-md" />
+              <video
+                src="/intro-videos/1.mp4"
+                controls
+                className="w-full sm:max-w-2xl aspect-video rounded-md"
+              />
               <p>
-                Here is another video showcasing possible VLM usage:
+                Here is another video showcasing possible AI usage:
               </p>
-              <video src="/intro-videos/2.mp4" controls className="max-w-1/5 h-auto rounded-md" />
+              <video
+                src="/intro-videos/2.mp4"
+                controls
+                className="w-full sm:max-w-2xl aspect-video rounded-md"
+              />
 
               <p>
                 This survey takes approximately X minutes to complete.
@@ -212,7 +239,7 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {questions.pages[currentPage]?.map((page, index) => 
+            {questions.pages[currentPage]?.map((page, index) =>
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
                   <Question
@@ -221,12 +248,18 @@ export default function Home() {
                     question={page}
                     onChange={onAnswerChange}
                     onOptionInputChange={onOptionInputAnswerChange}
+                    onRankReorder={onRankReorder}
                   />
                 )
               ) : (
                 <div key={index} className="space-y-2">
-                  {page.image && <img src={page.image} alt="Page image" className="max-w-full h-auto rounded-md" />}
+                  {page.image && <img
+                    src={page.image}
+                    alt="Page image"
+                    className="w-full sm:max-w-2xl lg:max-w-4xl max-h-[60vh] object-contain"
+                  />}
                   {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                  {page.footer && <p className="text-sm text-gray-500">{page.footer}</p>}
                 </div>
               )
             )}

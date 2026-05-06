@@ -28,23 +28,28 @@ export const AgreeDisagreeOptions: { options: SurveyTypes.ChooseRadioOption[], t
 
 export const ScenarioQuestions = (
   scenarioDescription: string,
-  vlmQuestion: string,
-  vlmAnswers: string[],
-  images: string[]
+  aiQuestion: string,
+  aiAnswers: string[],
+  images: string[],
+  disclaimImageHasBeenProcessed: boolean = false,
 ): SurveyTypes.SurveyContent[][] => {
-  if (vlmAnswers.length !== images.length) {
-    throw new Error("vlmAnswers and images must have the same length");
+  if (aiAnswers.length !== images.length) {
+    throw new Error("aiAnswers and images must have the same length");
   }
+
+  const processedDisclaimer = disclaimImageHasBeenProcessed    ? "The image has been processed to remove privacy sensitive information."
+    : "The image has not been processed, so it may contain privacy sensitive information.";
 
   return images.flatMap((image, index) => [
     [
       {
         type: "info",
-        lines: [scenarioDescription],
+        lines: [scenarioDescription, `❓ We asked the AI: ${aiQuestion}`],
+        footer: processedDisclaimer,
         image,
       },
       {
-        title: "I am comfortable with this image being processed by a Visual-Language Model (VLM).",
+        title: "I am comfortable with this image being processed by an AI system.",
         ...AgreeDisagreeOptions,
       },
       {
@@ -56,7 +61,7 @@ export const ScenarioQuestions = (
         ...AgreeDisagreeOptions,
       },
       {
-        title: `We asked the Visual-Language Model (VLM): ${vlmQuestion} What do you think its answer will be?`,
+        title: `What do you think the AI's answer will be?`,
         type: "text",
         value: "",
       },
@@ -68,15 +73,8 @@ export const ScenarioQuestions = (
         image,
       },
       {
-        title: `The Visual-Language Model (VLM) answered: ${vlmAnswers[index]}, how was the quality of its answer`,
-        type: "radio",
-        options: [
-          { type: "choose", value: "Extremely bad" },
-          { type: "choose", value: "Bad" },
-          { type: "choose", value: "Neither bad nor good" },
-          { type: "choose", value: "Good" },
-          { type: "choose", value: "Extremely good" },
-        ],
+        title: `💬 The AI answered: ${aiAnswers[index]}. I think the answer is of good quality.`,
+        ...AgreeDisagreeOptions,
       },
     ],
   ]);

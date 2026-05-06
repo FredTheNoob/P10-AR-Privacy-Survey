@@ -18,6 +18,7 @@ async function main() {
             max: "max" in q ? q.max : null,
             value: "value" in q ? q.value : null,
             lines: "lines" in q ? q.lines : null,
+            multiline: "multiline" in q ? q.multiline : null,
           },
           required: "required" in q ? q.required : true,
         }))
