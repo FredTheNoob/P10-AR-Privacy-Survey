@@ -4,13 +4,19 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const responseRouter = createTRPCRouter({
   create: publicProcedure
-    .input(z.object({ answer: z.string(), userId: z.string(), questionId: z.string() }))
+    .input(z.object({ answers: z.object({ pages: z.array(z.array(z.object({ answer: z.string(), userId: z.string(), questionId: z.string() }))) }) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.response.create({
-        data: {
-          answer: input.answer,
-          userId: input.userId,
-          questionId: input.questionId,
-        }});
+        const flattened = input.answers.pages.flat();
+
+        const createdResponses = await ctx.db.response.createMany({
+            data: flattened.map((item) => ({
+                answer: item.answer,
+                userId: item.userId,
+                questionId: item.questionId,
+            })),
+            skipDuplicates: true,
+        });
+
+        return createdResponses;;
     }),
 });

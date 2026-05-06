@@ -16,7 +16,7 @@ export default function Home() {
   const [surveyComplete, setSurveyComplete] = useState(false);
 
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
-  const createResponse = api.response.create.useMutation();
+  const createResponses = api.response.create.useMutation();
 
   useEffect(() => {
     if (data) setQuestions(data);
@@ -138,20 +138,10 @@ export default function Home() {
         localStorage.getItem("surveyAnswers") ?? "{}"
       ) as SurveyData;
 
-      for (const pages of storedAnswers.pages) {
-        for (const question of pages) {
-          if (question.type === "info") continue;
+      await createResponses.mutateAsync({
+        answers: storedAnswers,
+      });
 
-          const answer = question.answer;
-
-          if (!question.id || answer === undefined) continue;
-          await createResponse.mutateAsync({
-            answer: answer,
-            userId: userId,
-            questionId: question.id,
-          });
-        }
-      }
 
       window.location.href = "/done";
       return;
