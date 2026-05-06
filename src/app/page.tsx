@@ -19,7 +19,7 @@ export default function Home() {
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
   const createResponse = api.response.create.useMutation();
 
-  const totalPages = questions.pages.length - 1;
+  const totalPages = questions.pages.length;
   const progress = totalPages > 0 ? Math.min(100, (currentPage / totalPages) * 100) : 0;
 
   // useEffect(() => {
