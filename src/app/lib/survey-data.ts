@@ -153,7 +153,6 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                     }
                 ]
             },
-            // TODO: If they answer “agree” or “strongly agree” in previous question, they get this question:
             {
                 visible: false,
                 title: "What personal information concerns you the most?",

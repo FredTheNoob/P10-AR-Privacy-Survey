@@ -8,7 +8,8 @@ interface QuestionProps {
     onRankReorder: (questionId: number, nextOptions: string[]) => void;
 }
 
-const inputStyles = "border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputStyles =
+  "w-full max-w-md border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 const swapOptions = (options: string[], from: number, to: number) => {
     const next = [...options];
@@ -22,8 +23,9 @@ const swapOptions = (options: string[], from: number, to: number) => {
 
 export default function Question({ index, question, onChange, onOptionInputChange, onRankReorder }: QuestionProps) {
     return (
-        <div className="space-y-2">
-            <p>{question.title}</p>
+        <div className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <p className="mb-4 text-base font-semibold text-gray-900">{question.title}</p>
+
             {question.type === "number" && (
                 <input
                     value={question.answer ?? ""}
@@ -62,6 +64,7 @@ export default function Question({ index, question, onChange, onOptionInputChang
                                     value={option.value}
                                     checked={question.answer === option.value}
                                     onChange={() => onChange(index, option.value, optionIndex)}
+                                    className="h-5 w-5"
                                 />
                                 {option.value}
                             </label>

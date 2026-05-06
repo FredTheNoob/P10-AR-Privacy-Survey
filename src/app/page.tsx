@@ -19,6 +19,9 @@ export default function Home() {
   const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
   const createResponse = api.response.create.useMutation();
 
+  const totalPages = questions.pages.length - 1;
+  const progress = totalPages > 0 ? Math.min(100, (currentPage / totalPages) * 100) : 0;
+
   // useEffect(() => {
   //   if (data) setQuestions(data);
   // }, [data]);
@@ -196,7 +199,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       {!hasConsent && <ConsentDialog />}
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+
+
+      <div className="container mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6">
         {currentPage === 0 && (
           <>
             <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -239,6 +244,18 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
+            <div className="w-full px-4 pt-4">
+              <div className="h-2 w-full rounded bg-gray-100">
+                <div
+                  className="h-2 rounded bg-blue-500 transition-all"
+                  style={{ width: `${progress}%` }}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(progress)}
+                />
+              </div>
+            </div>
             {questions.pages[currentPage]?.map((page, index) =>
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
@@ -252,7 +269,7 @@ export default function Home() {
                   />
                 )
               ) : (
-                <div key={index} className="space-y-2">
+                <div key={index} className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
                   {page.image && <img
                     src={page.image}
                     alt="Page image"
