@@ -2,35 +2,52 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible, SURVEY_DATA } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 import ConsentDialog from "./_components/consent-dialog";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
+  const searchParams = useSearchParams();
+  const prolificId = searchParams.get("PROLIFIC_PID");
+
+  if (!prolificId) {
+    return <p className="flex min-h-screen flex-col items-center justify-center">
+      Prolific ID not found in URL. Please access the survey through the Prolific link provided to you.
+    </p>
+  }
+
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const { data, } = api.question.getAll.useQuery();
+  const { data } = api.question.getAll.useQuery();
+  const { data: hasCompletedSurveyData } = api.user.hasCompletedSurvey.useQuery({ prolificId });
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
 
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
+  // const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
+  const createUser = api.user.create.useMutation();
   const createResponse = api.response.create.useMutation();
+
+  const totalPages = questions.pages.length;
+  const progress = totalPages > 0 ? Math.min(100, (currentPage / totalPages) * 100) : 0;
 
   useEffect(() => {
     if (data) setQuestions(data);
   }, [data]);
 
   useEffect(() => {
+    if (hasCompletedSurveyData === undefined) return;
     setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
     setHasConsent(localStorage.getItem("hasConsent") === "true");
-    setSurveyComplete(localStorage.getItem("surveyComplete") === "true");
+    setSurveyComplete(localStorage.getItem("surveyComplete") === "true" && hasCompletedSurveyData);
 
     const stored = localStorage.getItem("surveyAnswers");
     if (stored) setQuestions(JSON.parse(stored) as SurveyData);
     setIsLoading(false);
-  }, []);
+  }, [hasCompletedSurveyData]);
 
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
@@ -66,6 +83,25 @@ export default function Home() {
     });
   }
 
+  const onRankReorder = (questionIdx: number, nextOptions: string[]) => {
+    setQuestions((prevQuestions) => {
+      const updatedPages = [...prevQuestions.pages];
+      const current = updatedPages[currentPage];
+      if (!current) return prevQuestions;
+
+      const updatedPage = [...current];
+      const question = updatedPage[questionIdx];
+
+      if (!question || question.type !== "rank") return prevQuestions;
+
+      question.answer = nextOptions.join(",");
+      updatedPage[questionIdx] = { ...question, options: nextOptions };
+      updatedPages[currentPage] = updatedPage;
+
+      return { ...prevQuestions, pages: updatedPages };
+    });
+  };
+
   function setQuestionError(question: QuestionType, error: string, errorObj: { hasError: boolean }) {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
@@ -80,6 +116,7 @@ export default function Home() {
   }
 
   async function goToNextPage() {
+    if (!prolificId) throw new Error("Missing PROLIFIC_PID");
     // validate answers
     const errorObj = { hasError: false };
     for (const question of questions.pages[currentPage]!) {
@@ -128,16 +165,13 @@ export default function Home() {
     if (currentPage === questions.pages.length - 1) {
       localStorage.setItem("surveyComplete", "true");
 
-      // Send the answers to the database
-      const userId = localStorage.getItem("user")
-      if (!userId) {
-        throw Error("User ID is null. Cannot save answers from user")
-      }
+      await createUser.mutateAsync({ prolificId: prolificId });
 
       const storedAnswers = JSON.parse(
         localStorage.getItem("surveyAnswers") ?? "{}"
       ) as SurveyData;
 
+      // Send the answers to the database
       for (const pages of storedAnswers.pages) {
         for (const question of pages) {
           if (question.type === "info") continue;
@@ -147,13 +181,13 @@ export default function Home() {
           if (!question.id || answer === undefined) continue;
           await createResponse.mutateAsync({
             answer: answer,
-            userId: userId,
+            userId: prolificId,
             questionId: question.id,
           });
         }
       }
 
-      window.location.href = "/done";
+      window.location.href = `/done?PROLIFIC_PID=${prolificId}`;
       return;
     }
 
@@ -162,22 +196,20 @@ export default function Home() {
   }
 
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <p>Loading...</p>
-      </main>
-    );
+    return <Spinner />;
   }
 
   if (surveyComplete) {
-    window.location.href = "/done";
+    window.location.href = `/done?PROLIFIC_PID=${prolificId}`;
     return null;
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      {!hasConsent && <ConsentDialog />}
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+      {!hasConsent && <ConsentDialog prolificId={prolificId} />}
+
+
+      <div className="container mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6">
         {currentPage === 0 && (
           <>
             <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -185,17 +217,25 @@ export default function Home() {
             </h1>
             <div className="space-y-5">
               <p>
-                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Vision-Language Models (VLMs) process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
-                This survey aims to explore how users perceive privacy in the context of AR and VLMs. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
+                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Artificial Intelligense (AI) can process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
+                This survey aims to explore how users perceive privacy in the context of AR and AI. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
               </p>
               <p>
                 If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
               </p>
-              <video src="/intro-videos/1.mp4" controls className="max-w-1/5 h-auto rounded-md" />
+              <video
+                src="/intro-videos/1.mp4"
+                controls
+                className="w-full sm:max-w-2xl aspect-video rounded-md"
+              />
               <p>
-                Here is another video showcasing possible VLM usage:
+                Here is another video showcasing possible AI usage:
               </p>
-              <video src="/intro-videos/2.mp4" controls className="max-w-1/5 h-auto rounded-md" />
+              <video
+                src="/intro-videos/2.mp4"
+                controls
+                className="w-full sm:max-w-2xl aspect-video rounded-md"
+              />
 
               <p>
                 This survey takes approximately X minutes to complete.
@@ -212,7 +252,19 @@ export default function Home() {
         )}
         {currentPage > 0 && (
           <>
-            {questions.pages[currentPage]?.map((page, index) => 
+            <div className="w-full px-4 pt-4">
+              <div className="h-2 w-full rounded bg-gray-100">
+                <div
+                  className="h-2 rounded bg-blue-500 transition-all"
+                  style={{ width: `${progress}%` }}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(progress)}
+                />
+              </div>
+            </div>
+            {questions.pages[currentPage]?.map((page, index) =>
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
                   <Question
@@ -221,12 +273,18 @@ export default function Home() {
                     question={page}
                     onChange={onAnswerChange}
                     onOptionInputChange={onOptionInputAnswerChange}
+                    onRankReorder={onRankReorder}
                   />
                 )
               ) : (
-                <div key={index} className="space-y-2">
-                  {page.image && <img src={page.image} alt="Page image" className="max-w-full h-auto rounded-md" />}
+                <div key={index} className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
+                  {page.image && <img
+                    src={page.image}
+                    alt="Page image"
+                    className="w-full sm:max-w-2xl lg:max-w-4xl max-h-[60vh] object-contain"
+                  />}
                   {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                  {page.footer && <p className="text-sm text-gray-500">{page.footer}</p>}
                 </div>
               )
             )}
