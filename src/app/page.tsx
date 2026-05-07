@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { isQuestion, isQuestionRequired, isQuestionVisible, SURVEY_DATA } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
@@ -27,12 +27,21 @@ export default function Home() {
   const [surveyComplete, setSurveyComplete] = useState(false);
 
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
-  // const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
   const createUser = api.user.create.useMutation();
   const createResponse = api.response.create.useMutation();
 
   const totalPages = questions.pages.length;
   const progress = totalPages > 0 ? Math.min(100, (currentPage / totalPages) * 100) : 0;
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "Leaving the site will lose progress on this page. Are you sure you want to leave?";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
 
   useEffect(() => {
     if (data) setQuestions(data);
