@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Question from "./_components/question";
 import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import { api } from "~/trpc/react";
-import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
 import ConsentDialog from "./_components/consent-dialog";
 
@@ -140,6 +139,7 @@ export default function Home() {
 
       await createResponses.mutateAsync({
         answers: storedAnswers,
+        userId: userId,
       });
 
 

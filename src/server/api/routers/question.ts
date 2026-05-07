@@ -29,7 +29,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
 
     const currentType = pageTypes[page];
 
-    // 🚨 Enforce strict separation
+    
     if (row.type === "info" && currentType !== "info") {
       throw new Error(`Page ${page} mixes Question and InformationPage`);
     }
@@ -38,7 +38,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       throw new Error(`Page ${page} mixes InformationPage and Question`);
     }
 
-    // ✅ Safe push with correct typing
+    
     if (row.type === "info") {
       (pages[page] as InformationPage[]).push({
         id: row.id,
