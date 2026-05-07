@@ -3,14 +3,14 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 
-export default function ConsentDialog() {
+export default function ConsentDialog({prolificId}: {prolificId: string}) {
   const [open, setOpen] = useState(true);
 
   const handleAgree = () => {
     localStorage.setItem("hasConsent", "true");
     setOpen(false);
   };
-  const handleDisagree = () => { window.location.href = "/done"; };
+  const handleDisagree = () => { window.location.href = `/no-consent?PROLIFIC_PID=${prolificId}`; };
 
   return (
     <Dialog.Root open={open}>

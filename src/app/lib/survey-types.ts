@@ -33,16 +33,23 @@ export type NumberQuestion = BaseQuestion & {
 export type TextQuestion = BaseQuestion & {
     type: "text";
     value: string;
+    multiline?: boolean;
+};
+
+export type RankQuestion = BaseQuestion & {
+    type: "rank";
+    options: string[];
 };
 
 export type InformationPage = {
     id?: string
     type: "info";
     lines: string[];
+    footer?: string;
     image?: string;
 }
 
-export type Question = RadioQuestion | NumberQuestion | TextQuestion;
+export type Question = RadioQuestion | NumberQuestion | TextQuestion | RankQuestion;
 export type SurveyContent = Question | InformationPage;
 
 export type SurveyData = {

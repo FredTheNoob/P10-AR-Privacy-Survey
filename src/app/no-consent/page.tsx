@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import Home from "./client-page";
-import Spinner from "./_components/spinner";
+import Spinner from "../_components/spinner";
+import NoConsentClientPage from "./no-consent-client";
 
 export default function NoConsentPage() {
   return (
     <Suspense fallback={<Spinner />}>
-      <Home />
+      <NoConsentClientPage />
     </Suspense>
   );
 }
