@@ -167,7 +167,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/fred/Programming/p10-ar-privacy-study/generated/prisma",
+      "value": "C:\\Users\\rasmu\\Desktop\\AAU - Projects\\10. semester\\P10-AR-Privacy-Survey\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -176,12 +176,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/fred/Programming/p10-ar-privacy-study/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\rasmu\\Desktop\\AAU - Projects\\10. semester\\P10-AR-Privacy-Survey\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -195,6 +195,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

@@ -1,58 +1,52 @@
-type BaseQuestion = {
-    id?: string,
+export type BaseQuestion = {
+    id?: string
     title: string;
-    image?: string;
+    visible?: boolean;
     required?: boolean;
     answer?: string;
     error?: string;
 }
 
-type ChooseRadioOption = {
+export type ChooseRadioOption = {
     type: "choose";
     value: string;
+    showNextQuestionOnClick?: boolean;
 }
 
-type TextRadioOption = {
+export type TextRadioOption = {
     type: "text";
     value: string;
     inputText?: string;
 }
 
-type RadioQuestion = BaseQuestion & {
+export type RadioQuestion = BaseQuestion & {
     type: "radio";
     options: (ChooseRadioOption | TextRadioOption)[];
 };
 
-type NumberQuestion = BaseQuestion & {
+export type NumberQuestion = BaseQuestion & {
     type: "number";
     min?: number;
     max?: number;
 };
 
-type TextQuestion = BaseQuestion & {
+export type TextQuestion = BaseQuestion & {
     type: "text";
     value: string;
 };
 
 export type InformationPage = {
-    id?: string,
+    id?: string
     type: "info";
     lines: string[];
+    image?: string;
 }
-
 
 export type Question = RadioQuestion | NumberQuestion | TextQuestion;
-
-export function isQuestion(page: Question | InformationPage): page is Question {
-    return (page as Question).title !== undefined;
-}
-
-export function isQuestionRequired(question: Question): boolean {
-    return question.required === undefined || question.required === true;
-}
+export type SurveyContent = Question | InformationPage;
 
 export type SurveyData = {
-    pages: (Question[] | InformationPage[])[];
+    pages: SurveyContent[][];
 }
 
 const AgreeDisagreeOptions: { options: ChooseRadioOption[] } = {

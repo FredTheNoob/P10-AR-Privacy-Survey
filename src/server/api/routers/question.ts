@@ -1,12 +1,13 @@
-import type { InformationPage, Question, SurveyData } from "prisma/survey-data";
+import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, TextRadioOption } from "prisma/survey-data";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import type { Prisma } from "@prisma/client";
 
 type DbQuestion = {
   id: string;
   title: string | null;
   type: string;
   pageIndex: number | null;
-  config: any;
+  config: Prisma.JsonValue;
   imageName: string | null;
   required: boolean | null;
 };
@@ -15,7 +16,7 @@ type PageType = "question" | "info";
 
 export function toSurveyData(rows: DbQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
-  const pages: (Question[] | InformationPage[])[] = [];
+  const pages: SurveyContent[][] = [];
   const pageTypes: Record<number, PageType> = {};
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
@@ -43,26 +44,35 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       (pages[page] as InformationPage[]).push({
         id: row.id,
         type: "info",
-        lines: row.config?.lines ?? [],
+        lines: row.config && typeof row.config === "object" && !Array.isArray(row.config) && "lines" in row.config ? (row.config as { lines?: string[] }).lines ?? [] : [],
       });
     } else {
-      (pages[page] as Question[]).push({
-        id: row.id,
-        title: row.title ?? "",
-        type: row.type as any,
-        image: row.imageName ?? undefined,
-        required: row.required ?? undefined,
-        ...(row.type === "number" && {
-          min: row.config?.min,
-          max: row.config?.max,
-        }),
-        ...(row.type === "radio" && {
-          options: row.config?.options,
-        }),
-        ...(row.type === "text" && {
-          value: row.config?.value,
-        }),
-      });
+        const question: Question =
+            row.type === "number"
+                ? {
+                    id: row.id,
+                    title: row.title ?? "",
+                    type: "number",
+                    required: row.required ?? undefined,
+                    min: row.config && typeof row.config === "object" && !Array.isArray(row.config) && "lines" in row.config ? (row.config as { min?: number }).min : undefined,
+                    max: row.config && typeof row.config === "object" && !Array.isArray(row.config) && "lines" in row.config ? (row.config as { max?: number }).max : undefined,
+                }
+                : row.type === "radio"
+                ? {
+                    id: row.id,
+                    title: row.title ?? "",
+                    type: "radio",
+                    required: row.required ?? undefined,
+                    options: row.config && typeof row.config === "object" && !Array.isArray(row.config) && "lines" in row.config ? (row.config as { options?: (ChooseRadioOption | TextRadioOption)[] }).options ?? [] : [],
+                }
+                : {
+                    id: row.id,
+                    title: row.title ?? "",
+                    type: "text",
+                    required: row.required ?? undefined,
+                    value: row.config && typeof row.config === "object" && !Array.isArray(row.config) && "lines" in row.config ? (row.config as { value?: string }).value ?? "" : "",
+                };
+        (pages[page] as Question[]).push(question);
     }
   }
 
