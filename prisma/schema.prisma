@@ -20,8 +20,9 @@ model Post {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  prolificId String @id @unique
   createdAt DateTime @default(now())
+  hasBeenRedirectedToProlific Boolean
 
   responses Response[]
 }
@@ -32,6 +33,7 @@ model SurveyQuestion {
   title     String?
   type      String   // "text" | "number" | "radio" | "info"
   required  Boolean?
+  visible Boolean @default(true)
 
   config    Json?    // all extra dynamic fields (options, min/max, etc.)
 
@@ -49,7 +51,7 @@ model Response {
   userId      String
   questionId  String
 
-  user        User           @relation(fields: [userId], references: [id])
+  user        User           @relation(fields: [userId], references: [prolificId])
   question    SurveyQuestion @relation(fields: [questionId], references: [id])
 
   createdAt   DateTime @default(now())

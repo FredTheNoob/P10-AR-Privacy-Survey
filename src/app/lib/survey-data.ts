@@ -180,36 +180,36 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
                     true
                 ),
-                ...ScenarioQuestions(
-                    "You are going for a walk and stumble upon a pond.",
-                    "What type of duck is this?",
-                    ["That is a mallard duck"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are at a group exercise.",
-                    "How do we get started?",
-                    ["idk bro"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are at a parking lot looking for your car.",
-                    "Where is my car? It's a grey chevrolet spark.",
-                    ["To the left of the parking lot."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are inside your home.",
-                    "Does moving my sofa to the left corner of the room look better?",
-                    ["Yeah man, that looks better!"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are inside your home.",
-                    "Where is the TV remote?",
-                    ["It's on the coffee table."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
+                // ...ScenarioQuestions(
+                //     "You are going for a walk and stumble upon a pond.",
+                //     "What type of duck is this?",
+                //     ["That is a mallard duck"],
+                //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                // ),
+                // ...ScenarioQuestions(
+                //     "You are at a group exercise.",
+                //     "How do we get started?",
+                //     ["idk bro"],
+                //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                // ),
+                // ...ScenarioQuestions(
+                //     "You are at a parking lot looking for your car.",
+                //     "Where is my car? It's a grey chevrolet spark.",
+                //     ["To the left of the parking lot."],
+                //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                // ),
+                // ...ScenarioQuestions(
+                //     "You are inside your home.",
+                //     "Does moving my sofa to the left corner of the room look better?",
+                //     ["Yeah man, that looks better!"],
+                //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                // ),
+                // ...ScenarioQuestions(
+                //     "You are inside your home.",
+                //     "Where is the TV remote?",
+                //     ["It's on the coffee table."],
+                //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+                // ),
             ]
         ),
         [

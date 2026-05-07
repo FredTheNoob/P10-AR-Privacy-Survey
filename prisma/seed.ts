@@ -1,13 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import { SURVEY_DATA, type Question, type InformationPage } from "./survey-data";
+import { SURVEY_DATA } from "~/app/lib/survey-data";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.response.deleteMany();
+  await prisma.surveyQuestion.deleteMany();
+
   await prisma.surveyQuestion.createMany({
     data: SURVEY_DATA.pages.flatMap((page, pageIndex) =>
       page
         .map((q) => ({
+          visible: "visible" in q ? q.visible : true,
           title: "title" in q ? q.title : null,
           type: q.type,
           imageName: "image" in q ? q.image : null,
@@ -19,6 +23,7 @@ async function main() {
             value: "value" in q ? q.value : null,
             lines: "lines" in q ? q.lines : null,
             multiline: "multiline" in q ? q.multiline : null,
+            footer: "footer" in q ? q.footer : null,
           },
           required: "required" in q ? q.required : true,
         }))
