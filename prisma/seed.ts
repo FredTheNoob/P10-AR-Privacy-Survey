@@ -4,9 +4,6 @@ import { SURVEY_DATA } from "~/app/lib/survey-data";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.response.deleteMany();
-  await prisma.surveyQuestion.deleteMany();
-
   await prisma.surveyQuestion.createMany({
     data: SURVEY_DATA.pages.flatMap((page, pageIndex) =>
       page

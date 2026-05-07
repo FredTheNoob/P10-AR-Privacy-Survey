@@ -77,12 +77,6 @@ export const surveyRouter = createTRPCRouter({
       },
     });
 
-    console.log("rows");
-    console.log(toSurveyData(rows));
-    console.log("survey data");
-    console.log(SURVEY_DATA);
-    
-
     return toSurveyData(rows)
   }),
 });
