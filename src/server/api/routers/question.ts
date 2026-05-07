@@ -1,13 +1,13 @@
-import type { InformationPage, Question, SurveyData } from "~/app/lib/survey-types";
+import type { ChooseRadioOption, InformationPage, Question, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { SURVEY_DATA } from "~/app/lib/survey-data";
+import type { JsonValue } from "@prisma/client/runtime/library";
 
 type DbQuestion = {
   id: string;
   title: string | null;
   type: string;
   pageIndex: number | null;
-  config: any;
+  config: JsonValue | null;
   imageName: string | null;
   required: boolean | null;
   visible: boolean;
@@ -18,10 +18,20 @@ type PageType = "question" | "info";
 export function toSurveyData(rows: DbQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
   const pages: (Question[] | InformationPage[])[] = [];
-  const pageTypes: Record<number, PageType> = {};  
+  const pageTypes: Record<number, PageType> = {};
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
     const page = row.pageIndex ?? 0;
+
+    const config = (row.config ?? {}) as {
+      options?: (ChooseRadioOption | TextRadioOption)[] | string[];
+      min?: number;
+      max?: number;
+      value?: string;
+      lines?: string[];
+      multiline?: boolean;
+      footer?: string;
+    };
 
     // Initialize page if missing
     if (!pages[page]) {
@@ -34,32 +44,50 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       (pages[page] as InformationPage[]).push({
         id: row.id,
         type: "info",
-        lines: row.config?.lines ?? [],
+        lines: config.lines ?? [],
         image: row.imageName ?? undefined,
-        footer: row.config?.footer ?? undefined,
+        footer: config.footer ?? undefined,
       });
     } else {
-      (pages[page] as Question[]).push({
+      const base = {
         visible: row.visible,
         id: row.id,
         title: row.title ?? "",
-        type: row.type as any,
         required: row.required ?? undefined,
-        ...(row.type === "number" && {
-          min: row.config?.min,
-          max: row.config?.max,
-        }),
-        ...(row.type === "radio" && {
-          options: row.config?.options,
-        }),
-        ...(row.type === "rank" && {
-          options: row.config?.options,
-        }),
-        ...(row.type === "text" && {
-          value: row.config?.value,
-          multiline: row.config?.multiline,
-        }),
-      });
+      };
+
+      switch (row.type) {
+        case "number":
+          (pages[page] as Question[]).push({
+            ...base,
+            type: "number",
+            min: config.min,
+            max: config.max,
+          });
+          break;
+        case "radio":
+          (pages[page] as Question[]).push({
+            ...base,
+            type: "radio",
+            options: (config.options as (ChooseRadioOption | TextRadioOption)[]) ?? [],
+          });
+          break;
+        case "rank":
+          (pages[page] as Question[]).push({
+            ...base,
+            type: "rank",
+            options: (config.options as string[]) ?? [],
+          });
+          break;
+        case "text":
+          (pages[page] as Question[]).push({
+            ...base,
+            type: "text",
+            value: config.value ?? "",
+            multiline: config.multiline,
+          });
+          break;
+      }
     }
   }
 

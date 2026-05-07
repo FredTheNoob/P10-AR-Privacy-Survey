@@ -31,7 +31,7 @@ export const ScenarioQuestions = (
   aiQuestion: string,
   aiAnswers: string[],
   images: string[],
-  disclaimImageHasBeenProcessed: boolean = false,
+  disclaimImageHasBeenProcessed = false,
 ): SurveyTypes.SurveyContent[][] => {
   if (aiAnswers.length !== images.length) {
     throw new Error("aiAnswers and images must have the same length");
