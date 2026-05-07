@@ -64,6 +64,7 @@ export const ScenarioQuestions = (
         title: `What do you think the AI's answer will be?`,
         type: "text",
         value: "",
+        multiline: true,
       },
     ],
     [

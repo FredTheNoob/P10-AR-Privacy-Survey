@@ -7,12 +7,13 @@ async function main() {
   await prisma.surveyQuestion.createMany({
     data: SURVEY_DATA.pages.flatMap((page, pageIndex) =>
       page
-        .map((q) => ({
+        .map((q, questionIndex) => ({
           visible: "visible" in q ? q.visible : true,
           title: "title" in q ? q.title : null,
           type: q.type,
           imageName: "image" in q ? q.image : null,
-          pageIndex, // ✅ correct page grouping
+          pageIndex,
+          questionIndex,
           config: {
             options: "options" in q ? q.options : null,
             min: "min" in q ? q.min : null,

@@ -39,7 +39,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       pageTypes[page] = row.type === "info" ? "info" : "question";
     }
 
-    
+
     if (row.type === "info") {
       (pages[page] as InformationPage[]).push({
         id: row.id,
@@ -100,9 +100,10 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
 export const surveyRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db.surveyQuestion.findMany({
-      orderBy: {
-        pageIndex: "asc",
-      },
+      orderBy: [
+        { pageIndex: "asc" },
+        { questionIndex: "asc" },
+      ],
     });
 
     return toSurveyData(rows)
