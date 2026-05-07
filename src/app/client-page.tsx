@@ -15,6 +15,8 @@ export default function Home() {
   const prolificId = searchParams.get("PROLIFIC_PID");
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(0);
   const { data } = api.question.getAll.useQuery();
   const { data: hasCompletedSurveyData } =
@@ -91,7 +93,7 @@ export default function Home() {
       const question = updatedPage[questionIdx];
 
       if (question?.type !== "rank") return prevQuestions;
-      
+
       question.answer = nextOptions.join(",");
       updatedPage[questionIdx] = { ...question, options: nextOptions };
       updatedPages[currentPage] = updatedPage;
@@ -162,6 +164,7 @@ export default function Home() {
 
     if (currentPage === questions.pages.length - 1) {
       localStorage.setItem("surveyComplete", "true");
+      setIsSubmitting(true);
 
       await createUser.mutateAsync({ prolificId: prolificId });
 
@@ -186,6 +189,7 @@ export default function Home() {
       }
 
       window.location.href = `/done?PROLIFIC_PID=${prolificId}`;
+      setIsSubmitting(false);
       return;
     }
 
@@ -295,17 +299,30 @@ export default function Home() {
             <div className="flex space-x-3">
               <button
                 type="submit"
-                className="rounded-full bg-white px-10 py-3 font-semibold border border-gray-300 text-gray-700"
+                disabled={isSubmitting}
+                className={`rounded-full bg-white px-10 py-3 font-semibold border border-gray-300 ${isSubmitting
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700"
+                  }`}
                 onClick={goToPreviousPage}
               >
                 Previous Page
               </button>
               <button
                 type="submit"
-                className="rounded-full bg-blue-500 px-10 py-3 font-semibold transition hover:bg-blue-600 text-white"
+                disabled={isSubmitting}
+                className={`rounded-full bg-blue-500 px-10 py-3 font-semibold transition text-white ${isSubmitting
+                    ? "bg-blue-300 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"
+                  }`}
                 onClick={goToNextPage}
               >
-                {currentPage === questions.pages.length - 1 ? "Finish Survey" : "Next Page"}
+                {isSubmitting
+                  ? "Submitting..."
+                  : currentPage === questions.pages.length - 1
+                    ? "Finish Survey"
+                    : "Next Page"
+                }
               </button>
             </div>
           </>

@@ -32,12 +32,13 @@ model SurveyQuestion {
 
   title     String?
   type      String   // "text" | "number" | "radio" | "info"
-  required  Boolean?
+  required  Boolean @default(true)
   visible Boolean @default(true)
 
   config    Json?    // all extra dynamic fields (options, min/max, etc.)
 
-  pageIndex Int?     // optional: keeps your page structure
+  pageIndex Int
+  questionIndex Int
 
   imageName String?  
 

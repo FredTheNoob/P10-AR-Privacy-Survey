@@ -1,4 +1,4 @@
-import type { ChooseRadioOption, InformationPage, Question, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
+import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import type { JsonValue } from "@prisma/client/runtime/library";
 
@@ -17,7 +17,7 @@ type PageType = "question" | "info";
 
 export function toSurveyData(rows: DbQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
-  const pages: (Question[] | InformationPage[])[] = [];
+  const pages: SurveyContent[][] = [];
   const pageTypes: Record<number, PageType> = {};
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
@@ -39,7 +39,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       pageTypes[page] = row.type === "info" ? "info" : "question";
     }
 
-    // ✅ Safe push with correct typing
+
     if (row.type === "info") {
       (pages[page] as InformationPage[]).push({
         id: row.id,
@@ -100,9 +100,10 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
 export const surveyRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db.surveyQuestion.findMany({
-      orderBy: {
-        pageIndex: "asc",
-      },
+      orderBy: [
+        { pageIndex: "asc" },
+        { questionIndex: "asc" },
+      ],
     });
 
     return toSurveyData(rows)
