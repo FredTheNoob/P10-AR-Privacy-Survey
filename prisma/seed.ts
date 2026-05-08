@@ -9,6 +9,7 @@ async function main() {
       page
         .map((q, questionIndex) => ({
           visible: "visible" in q ? q.visible : true,
+          isScenario: "isScenario" in q ? q.isScenario : false,
           title: "title" in q ? q.title : null,
           type: q.type,
           imageName: "image" in q ? q.image : null,

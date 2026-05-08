@@ -5,6 +5,7 @@ export type BaseQuestion = {
     required?: boolean;
     answer?: string;
     error?: string;
+    isScenario?: boolean;
 }
 
 export type ChooseRadioOption = {
