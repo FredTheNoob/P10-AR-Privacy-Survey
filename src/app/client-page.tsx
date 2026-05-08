@@ -176,6 +176,10 @@ export default function Home() {
             }
           }
           break;
+
+        case "rank":
+          question.answer ??= "None,Replacing,Blur,Black box";
+        break;
       }
     }
     if (errorObj.hasError) return;

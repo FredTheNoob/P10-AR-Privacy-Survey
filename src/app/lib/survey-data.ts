@@ -149,40 +149,56 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
         ...ScenarioQuestions(
             "You are at the supermarket looking for cheap fruit",
             "What is the cheapest fruit?",
-            ["The cheapest fruit is bananas at $0.99 per pound."],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
-            true
+            [
+                {
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s",
+                    aiAnswer: "The cheapest fruit is bananas at $0.99 per pound.",
+                    censoringMethod: "NONE"
+                },
+            ],
+            "SUPERMARKET",
+            true,
         ),
         ...ScenarioQuestions(
             "You are going for a walk and stumble upon a pond.",
             "What type of duck is this?",
-            ["That is a mallard duck"],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+            [
+                {
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s",
+                    aiAnswer: "That is a mallard duck",
+                    censoringMethod: "BLUR"
+                }
+            ],
+            "DUCKS",
         ),
-        ...ScenarioQuestions(
-            "You are at a group exercise.",
-            "How do we get started?",
-            ["idk bro"],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-        ),
-        ...ScenarioQuestions(
-            "You are at a parking lot looking for your car.",
-            "Where is my car? It's a grey chevrolet spark.",
-            ["To the left of the parking lot."],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-        ),
-        ...ScenarioQuestions(
-            "You are inside your home.",
-            "Does moving my sofa to the left corner of the room look better?",
-            ["Yeah man, that looks better!"],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-        ),
-        ...ScenarioQuestions(
-            "You are inside your home.",
-            "Where is the TV remote?",
-            ["It's on the coffee table."],
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-        ),
+        // ...ScenarioQuestions(
+        //     "You are at a group exercise.",
+        //     "How do we get started?",
+        //     ["idk bro"],
+        //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+        //     "BLACK_BOX"
+        // ),
+        // ...ScenarioQuestions(
+        //     "You are at a parking lot looking for your car.",
+        //     "Where is my car? It's a grey chevrolet spark.",
+        //     ["To the left of the parking lot."],
+        //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+        //     "REPLACE"
+        // ),
+        // ...ScenarioQuestions(
+        //     "You are inside your home.",
+        //     "Does moving my sofa to the left corner of the room look better?",
+        //     ["Yeah man, that looks better!"],
+        //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+        //     "NONE"
+        // ),
+        // ...ScenarioQuestions(
+        //     "You are inside your home.",
+        //     "Where is the TV remote?",
+        //     ["It's on the coffee table."],
+        //     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+        //     "REPLACE",
+        // ),
         [
             {
                 title: "I am comfortable with sending a video/image with other people to an AI to get my question answered.",
@@ -201,7 +217,8 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                     "Replacing",
                     "Blur",
                     "Black box"
-                ]
+                ],
+                answer: "None,Replacing,Blur,Black box"
             },
             {
                 title: "Why did you pick this ranking?",

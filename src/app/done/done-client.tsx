@@ -2,7 +2,7 @@
 
 import { env } from "~/env";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "../_components/spinner";
 import { api } from "~/trpc/react";
 import { skipToken } from "@tanstack/react-query";

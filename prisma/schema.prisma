@@ -42,8 +42,26 @@ model SurveyQuestion {
   questionIndex Int
 
   imageName String?  
+  censoringMethod CensoringMethod?
+  scenario Scenario?
 
   responses Response[]
+}
+
+enum CensoringMethod {
+  NONE
+  BLUR
+  BLACK_BOX
+  REPLACE
+}
+
+enum Scenario {
+  GROUP_EXERCISE
+  SUPERMARKET
+  DUCKS
+  PARKING_LOT
+  AT_HOME_TV_REMOTE
+  AT_HOME_COUCH
 }
 
 model Response {
