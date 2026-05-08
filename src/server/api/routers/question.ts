@@ -11,6 +11,7 @@ type DbQuestion = {
   imageName: string | null;
   required: boolean | null;
   visible: boolean;
+  isScenario: boolean;
 };
 
 type PageType = "question" | "info";
@@ -51,6 +52,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     } else {
       const base = {
         visible: row.visible,
+        isScenario: row.isScenario,
         id: row.id,
         title: row.title ?? "",
         required: row.required ?? undefined,
@@ -106,6 +108,51 @@ export const surveyRouter = createTRPCRouter({
       ],
     });
 
-    return toSurveyData(rows)
+    const data = toSurveyData(rows);
+
+    const isScenarioPage = (page: SurveyContent[]) =>
+      page.some((item) => "isScenario" in item && item.isScenario === true);
+
+    let start = -1;
+    let end = -1;
+
+    for (let i = 0; i < data.pages.length; i++) {
+      const page = data.pages[i];
+      if (page && isScenarioPage(page)) {
+        if (start === -1) start = i;
+        end = i + 1;
+      } else if (start !== -1) {
+        break;
+      }
+    }
+
+    if (start !== -1 && end !== -1) {
+      const scenarioPages = data.pages.slice(start, end).filter(
+        (page): page is SurveyContent[] => Array.isArray(page)
+      );
+
+      const pairs: [SurveyContent[], SurveyContent[]][] = [];
+      for (let i = 0; i + 1 < scenarioPages.length; i += 2) {
+        const first = scenarioPages[i];
+        const second = scenarioPages[i + 1];
+        if (!first || !second) continue;
+        pairs.push([first, second]);
+      }
+
+      // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+      for (let i = pairs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const a = pairs[i];
+        const b = pairs[j];
+        if (!a || !b) continue;
+        pairs[i] = b;
+        pairs[j] = a;
+      }
+
+      const shuffled = pairs.flat();
+      data.pages.splice(start, shuffled.length, ...shuffled);
+    }
+
+    return data;
   }),
 });

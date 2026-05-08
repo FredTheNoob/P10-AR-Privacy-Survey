@@ -13,31 +13,6 @@ export function isQuestionVisible(question: SurveyTypes.Question): boolean {
     return question.visible === undefined || question.visible === true;
 }
 
-function randomizeQuestionPairs(questionPages: SurveyTypes.SurveyContent[][]): SurveyTypes.SurveyContent[][] {
-    const paired: [SurveyTypes.SurveyContent[], SurveyTypes.SurveyContent[]][] = []; // A 3D array holds our pairs
-
-    // Create the pairs
-    for (let i = 0; i + 1 < questionPages.length; i += 2) {
-        const first = questionPages[i];
-        const second = questionPages[i + 1];
-        if (!first || !second) continue; // TS gets angry if we don't check this
-        paired.push([first, second]);
-    }
-
-    // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
-    for (let i = paired.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const a = paired[i];
-        const b = paired[j];
-        if (!a || !b) continue; // TS gets angry if we don't check this
-        paired[i] = b;
-        paired[j] = a;
-    }
-
-    // Flatten the array: 3D -> 2D
-    return paired.flat();
-}
-
 export const SURVEY_DATA: SurveyTypes.SurveyData = {
     pages: [
         [],
@@ -171,46 +146,42 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 ]
             }
         ],
-        ...randomizeQuestionPairs(
-            [
-                ...ScenarioQuestions(
-                    "You are at the supermarket looking for cheap fruit",
-                    "What is the cheapest fruit?",
-                    ["The cheapest fruit is bananas at $0.99 per pound."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
-                    true
-                ),
-                ...ScenarioQuestions(
-                    "You are going for a walk and stumble upon a pond.",
-                    "What type of duck is this?",
-                    ["That is a mallard duck"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are at a group exercise.",
-                    "How do we get started?",
-                    ["idk bro"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are at a parking lot looking for your car.",
-                    "Where is my car? It's a grey chevrolet spark.",
-                    ["To the left of the parking lot."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are inside your home.",
-                    "Does moving my sofa to the left corner of the room look better?",
-                    ["Yeah man, that looks better!"],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-                ...ScenarioQuestions(
-                    "You are inside your home.",
-                    "Where is the TV remote?",
-                    ["It's on the coffee table."],
-                    ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
-                ),
-            ]
+        ...ScenarioQuestions(
+            "You are at the supermarket looking for cheap fruit",
+            "What is the cheapest fruit?",
+            ["The cheapest fruit is bananas at $0.99 per pound."],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"],
+            true
+        ),
+        ...ScenarioQuestions(
+            "You are going for a walk and stumble upon a pond.",
+            "What type of duck is this?",
+            ["That is a mallard duck"],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+        ),
+        ...ScenarioQuestions(
+            "You are at a group exercise.",
+            "How do we get started?",
+            ["idk bro"],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+        ),
+        ...ScenarioQuestions(
+            "You are at a parking lot looking for your car.",
+            "Where is my car? It's a grey chevrolet spark.",
+            ["To the left of the parking lot."],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+        ),
+        ...ScenarioQuestions(
+            "You are inside your home.",
+            "Does moving my sofa to the left corner of the room look better?",
+            ["Yeah man, that looks better!"],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
+        ),
+        ...ScenarioQuestions(
+            "You are inside your home.",
+            "Where is the TV remote?",
+            ["It's on the coffee table."],
+            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s"]
         ),
         [
             {

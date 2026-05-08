@@ -18,13 +18,17 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const { data } = api.question.getAll.useQuery();
   const { data: hasCompletedSurveyData } =
     api.user.hasCompletedSurvey.useQuery(
       prolificId ? { prolificId } : skipToken
     );
   const [hasConsent, setHasConsent] = useState(false);
   const [surveyComplete, setSurveyComplete] = useState(false);
+  const [shouldFetchQuestions, setShouldFetchQuestions] = useState(false);
+
+  const { data } = api.question.getAll.useQuery(
+    shouldFetchQuestions ? undefined : skipToken
+  );
 
   const [questions, setQuestions] = useState<SurveyData>({ pages: [] });
   // const [questions, setQuestions] = useState<SurveyData>(SURVEY_DATA);
@@ -35,19 +39,36 @@ export default function Home() {
   const progress = totalPages > 0 ? Math.min(100, (currentPage / totalPages) * 100) : 0;
 
   useEffect(() => {
-    if (data) setQuestions(data);
-  }, [data]);
-
-  useEffect(() => {
     if (hasCompletedSurveyData === undefined) return;
     setCurrentPage(Number(localStorage.getItem("currentPage") ?? "0"));
     setHasConsent(localStorage.getItem("hasConsent") === "true");
     setSurveyComplete(localStorage.getItem("surveyComplete") === "true" && hasCompletedSurveyData);
 
     const stored = localStorage.getItem("surveyAnswers");
-    if (stored) setQuestions(JSON.parse(stored) as SurveyData);
+    if (stored) {
+      setQuestions(JSON.parse(stored) as SurveyData);
+    } else {
+      setShouldFetchQuestions(true);
+    }
+
     setIsLoading(false);
   }, [hasCompletedSurveyData]);
+
+  useEffect(() => {
+    if (data) setQuestions(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (isSubmitting || surveyComplete) return;
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isSubmitting, surveyComplete]);
 
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
@@ -301,8 +322,8 @@ export default function Home() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`rounded-full bg-white px-10 py-3 font-semibold border border-gray-300 ${isSubmitting
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-700"
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700"
                   }`}
                 onClick={goToPreviousPage}
               >
@@ -312,8 +333,8 @@ export default function Home() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`rounded-full bg-blue-500 px-10 py-3 font-semibold transition text-white ${isSubmitting
-                    ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600"
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
                   }`}
                 onClick={goToNextPage}
               >
