@@ -1,3 +1,5 @@
+import type { CensoringMethod, Scenario } from "@prisma/client";
+
 export type BaseQuestion = {
     id?: string
     title: string;
@@ -6,6 +8,8 @@ export type BaseQuestion = {
     answer?: string;
     error?: string;
     isScenario?: boolean;
+    censoringMethod?: CensoringMethod;
+    scenario?: Scenario;
 }
 
 export type ChooseRadioOption = {
@@ -56,3 +60,9 @@ export type SurveyContent = Question | InformationPage;
 export type SurveyData = {
     pages: SurveyContent[][];
 }
+
+export type ScenarioQuestions = {
+  image: string;
+  aiAnswer: string;
+  censoringMethod: CensoringMethod;
+}[];

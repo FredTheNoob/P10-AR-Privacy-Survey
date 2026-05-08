@@ -10,6 +10,8 @@ async function main() {
         .map((q, questionIndex) => ({
           visible: "visible" in q ? q.visible : true,
           isScenario: "isScenario" in q ? q.isScenario : false,
+          censoringMethod: "censoringMethod" in q ? q.censoringMethod : null,
+          scenario: "scenario" in q ? q.scenario : null,
           title: "title" in q ? q.title : null,
           type: q.type,
           imageName: "image" in q ? q.image : null,
