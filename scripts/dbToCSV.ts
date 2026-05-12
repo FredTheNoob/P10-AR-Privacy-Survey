@@ -5,6 +5,21 @@ import path from "path";
 const targetFile = path.resolve(__dirname, "../survey-questions.csv");
 const prisma = new PrismaClient();
 
+const formatCEST = (date: Date | null | undefined) => {
+    if (!date) return "null";
+    return new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Copenhagen",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZoneName: "short",
+    }).format(date);
+};
+
 const csvEscape = (value: string | null | undefined) => {
     const str = value ?? "";
     if (/[",\n]/.test(str)) {
@@ -34,10 +49,11 @@ async function main() {
         "question",
         "censoringMethod",
         "scenario",
-        ...userIds.map((u) => `user_${u.prolificId}`),
+        "trial#",
+        ...userIds.map((u) => `user_${u.prolificId}_answer,user_${u.prolificId}_time`),
     ];
 
-    fs.writeFileSync(targetFile, headers.join(",") + "\n");
+    fs.writeFileSync(targetFile, headers.join(",") + "\n", {encoding: "utf-8"});
 
     console.log("CSV header written.");
 
@@ -55,6 +71,7 @@ async function main() {
                     userId: true,
                     answer: true,
                     questionId: true,
+                    answeredAt: true,
                 },
             },
         },
@@ -70,6 +87,7 @@ async function main() {
             csvEscape(question.title),
             csvEscape(question.censoringMethod ?? "null"),
             csvEscape(question.scenario ?? "null"),
+            csvEscape(i.toString())
         ];
 
         for (const user of userIds) {
@@ -77,12 +95,14 @@ async function main() {
 
             if (!userResponse) {
                 row.push(csvEscape("null"));
+                row.push(csvEscape("null"));
             } else {
                 row.push(csvEscape(userResponse.answer ?? "null"));
+                row.push(csvEscape(formatCEST(userResponse.answeredAt)));
             }
         }
 
-        fs.appendFileSync(targetFile, row.join(",") + "\n");
+        fs.appendFileSync(targetFile, row.join(",") + "\n", {encoding: "utf-8"});
         console.log(`${i}/${surveyQuestions.length} questions written to CSV...`);
         i++;
     }
