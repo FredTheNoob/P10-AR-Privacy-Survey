@@ -2,48 +2,48 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([name])
+  @@index([name])
 }
 
 model User {
-  prolificId String @id @unique
-  createdAt DateTime @default(now())
+  prolificId                  String   @id @unique
+  createdAt                   DateTime @default(now())
   hasBeenRedirectedToProlific Boolean
 
   responses Response[]
 }
 
 model SurveyQuestion {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  title     String?
-  type      String   // "text" | "number" | "radio" | "info"
-  required  Boolean @default(true)
-  visible Boolean @default(true)
+  title      String?
+  type       String // "text" | "number" | "radio" | "info"
+  required   Boolean @default(true)
+  visible    Boolean @default(true)
   isScenario Boolean @default(false)
 
-  config    Json?    // all extra dynamic fields (options, min/max, etc.)
+  config Json? // all extra dynamic fields (options, min/max, etc.)
 
-  pageIndex Int
+  pageIndex     Int
   questionIndex Int
 
-  imageName String?  
+  imageName       String?
   censoringMethod CensoringMethod?
-  scenario Scenario?
+  scenario        Scenario?
 
   responses Response[]
 }
@@ -65,14 +65,15 @@ enum Scenario {
 }
 
 model Response {
-  id          String   @id @default(cuid())
-  answer      String
+  id     String @id @default(cuid())
+  answer String
 
-  userId      String
-  questionId  String
+  userId     String
+  questionId String
 
-  user        User           @relation(fields: [userId], references: [prolificId])
-  question    SurveyQuestion @relation(fields: [questionId], references: [id])
+  user     User           @relation(fields: [userId], references: [prolificId])
+  question SurveyQuestion @relation(fields: [questionId], references: [id])
 
-  createdAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
+  answeredAt DateTime
 }

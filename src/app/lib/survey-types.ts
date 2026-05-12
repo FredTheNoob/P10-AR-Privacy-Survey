@@ -10,6 +10,7 @@ export type BaseQuestion = {
     isScenario?: boolean;
     censoringMethod?: CensoringMethod;
     scenario?: Scenario;
+    answeredAt?: Date;
 }
 
 export type ChooseRadioOption = {
