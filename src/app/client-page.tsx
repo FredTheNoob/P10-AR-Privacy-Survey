@@ -76,6 +76,7 @@ export default function Home() {
       const question = updatedQuestions[currentPage]![questionIdx];
       if (!question || !isQuestion(question)) return prevQuestions;
       question.answer = answer;
+      question.answeredAt = new Date();
 
       if (question.type === "radio" && optionIdx !== undefined) {
         const option = question.options[optionIdx]!;
@@ -100,6 +101,9 @@ export default function Home() {
       if (option.type === "text") {
         option.inputText = inputText;
       }
+      
+      question!.answeredAt = new Date();
+
       return { ...prevQuestions, pages: updatedQuestions };
     });
   }
@@ -116,6 +120,7 @@ export default function Home() {
       if (question?.type !== "rank") return prevQuestions;
 
       question.answer = nextOptions.join(",");
+      question.answeredAt = new Date();
       updatedPage[questionIdx] = { ...question, options: nextOptions };
       updatedPages[currentPage] = updatedPage;
 
@@ -179,6 +184,7 @@ export default function Home() {
 
         case "rank":
           question.answer ??= "None,Replacing,Blur,Black box";
+          question.answeredAt ??= new Date();
         break;
       }
     }
@@ -209,6 +215,7 @@ export default function Home() {
             answer: answer,
             userId: prolificId,
             questionId: question.id,
+            answeredAt: question.answeredAt!
           });
         }
       }
