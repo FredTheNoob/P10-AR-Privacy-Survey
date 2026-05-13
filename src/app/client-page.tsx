@@ -258,7 +258,7 @@ export default function Home() {
             </h1>
             <div className="space-y-5">
               <p>
-                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Artificial Intelligense (AI) can process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
+                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Artificial Intelligence (AI) can process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
                 This survey aims to explore how users perceive privacy in the context of AR and AI. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
               </p>
               <p>

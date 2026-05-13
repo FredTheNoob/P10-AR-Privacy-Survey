@@ -62,7 +62,7 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                     },
                     {
                         type: "choose",
-                        value: "Regular use (Several times a week",
+                        value: "Regular use (Several times a week)",
                         showNextQuestionOnClick: true
                     },
                     {
