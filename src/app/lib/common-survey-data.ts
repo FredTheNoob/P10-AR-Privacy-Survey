@@ -30,10 +30,10 @@ export const AgreeDisagreeOptions: { options: SurveyTypes.ChooseRadioOption[], t
 
 
 export const ScenarioQuestions = (
+  scenarioType: Scenario,
   scenarioDescription: string,
   aiQuestion: string,
   scenarios: SurveyTypes.ScenarioQuestions,
-  scenarioType: Scenario,
 ): SurveyTypes.SurveyContent[][] => {
   let disclaimer = "";
   const processedDisclaimer = "The image has been processed to remove privacy sensitive information.";
