@@ -101,7 +101,7 @@ export default function Home() {
       if (option.type === "text") {
         option.inputText = inputText;
       }
-      
+
       question!.answeredAt = new Date();
 
       return { ...prevQuestions, pages: updatedQuestions };
@@ -185,7 +185,7 @@ export default function Home() {
         case "rank":
           question.answer ??= "None,Generative Censoring,Blur,Black box";
           question.answeredAt ??= new Date();
-        break;
+          break;
       }
     }
     if (errorObj.hasError) return;
@@ -319,11 +319,26 @@ export default function Home() {
                 )
               ) : (
                 <div key={index} className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-3">
-                  {page.image && <img
-                    src={page.image}
-                    alt="Page image"
-                    className="w-full sm:max-w-2xl lg:max-w-4xl max-h-[60vh] object-contain"
-                  />}
+                  {page.image && (
+                    <>
+                      <a
+                        href={page.image}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block w-full text-center"
+                        aria-label="Open image in a new tab"
+                      >
+                        <img
+                          src={page.image}
+                          alt="Page image"
+                          className="mx-auto w-full sm:max-w-2xl lg:max-w-4xl max-h-[60vh] object-contain rounded-lg"
+                        />
+                      </a>
+                      <p className="text-center text-sm text-gray-500 -mt-3">
+                        Click the image to view it larger and zoom in.
+                      </p>
+                    </>
+                  )}
                   {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
                   {page.footer && <p className="text-sm text-gray-500">{page.footer}</p>}
                 </div>
