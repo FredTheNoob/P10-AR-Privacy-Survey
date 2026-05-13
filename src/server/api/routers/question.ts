@@ -153,9 +153,6 @@ export const surveyRouter = createTRPCRouter({
       data.pages.splice(start, shuffled.length, ...shuffled);
     }
 
-    console.log(data);
-    
-
     return data;
   }),
 });

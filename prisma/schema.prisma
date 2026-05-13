@@ -52,7 +52,7 @@ enum CensoringMethod {
   NONE
   BLUR
   BLACK_BOX
-  REPLACE
+  GEN_CENSORING
 }
 
 enum Scenario {

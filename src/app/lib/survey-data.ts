@@ -153,11 +153,10 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 {
                     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn4lC2PX1ugZuP4EiO0fduFxCQKi4WWCfeiA&s",
                     aiAnswer: "The cheapest fruit is bananas at $0.99 per pound.",
-                    censoringMethod: "NONE"
+                    censoringMethod: "NONE",
                 },
             ],
             "SUPERMARKET",
-            true,
         ),
         ...ScenarioQuestions(
             "You are going for a walk and stumble upon a pond.",
@@ -210,15 +209,15 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
             },
             {
                 required: false,
-                title: "Which privacy-preserving techniques are most effective at protecting user privacy? Rank them.",
+                title: "Which censoring methods are most effective at protecting user privacy? Rank them.",
                 type: "rank",
                 options: [
                     "None",
-                    "Replacing",
+                    "Generative Censoring",
                     "Blur",
                     "Black box"
                 ],
-                answer: "None,Replacing,Blur,Black box"
+                answer: "None,Generative Censoring,Blur,Black box"
             },
             {
                 title: "Why did you pick this ranking?",

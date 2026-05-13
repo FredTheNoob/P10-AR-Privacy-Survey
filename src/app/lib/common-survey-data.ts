@@ -1,4 +1,4 @@
-import type { Scenario } from "@prisma/client";
+import { CensoringMethod, type Scenario } from "@prisma/client";
 import type * as SurveyTypes from "./survey-types";
 
 export const AgreeDisagreeOptions: { options: SurveyTypes.ChooseRadioOption[], type: "radio" } = {
@@ -34,11 +34,10 @@ export const ScenarioQuestions = (
   aiQuestion: string,
   scenarios: SurveyTypes.ScenarioQuestions,
   scenarioType: Scenario,
-  disclaimImageHasBeenProcessed = false,
 ): SurveyTypes.SurveyContent[][] => {
-  const processedDisclaimer = disclaimImageHasBeenProcessed
-    ? "The image has been processed to remove privacy sensitive information."
-    : "The image has not been processed, so it may contain privacy sensitive information.";
+  let disclaimer = "";
+  const processedDisclaimer = "The image has been processed to remove privacy sensitive information.";
+  const notProcessedDisclaimer = "The image has not been processed, so it may contain privacy sensitive information.";
 
   return scenarios.flatMap((scenario) => {
     const baseScenarioQuestion = {
@@ -47,6 +46,23 @@ export const ScenarioQuestions = (
       isScenario: true,
     };
 
+    switch (scenario.censoringMethod) {
+      case CensoringMethod.BLACK_BOX:
+        disclaimer = `${processedDisclaimer} It uses a black box censoring method`;
+        break;
+    
+      case CensoringMethod.BLUR:
+        disclaimer = `${processedDisclaimer} It uses a blur censoring method`;
+        break;
+
+      case CensoringMethod.GEN_CENSORING:
+        disclaimer = `${processedDisclaimer} It uses a generative censoring method`;
+        break;
+      case CensoringMethod.NONE:
+        disclaimer = `${notProcessedDisclaimer} It uses no censoring method`;
+        break;
+    }
+
     return [
       [
         {
@@ -54,7 +70,7 @@ export const ScenarioQuestions = (
           type: "info",
           title: aiQuestion,
           lines: [scenarioDescription, `❓ We asked the AI: "${aiQuestion}"`],
-          footer: processedDisclaimer,
+          footer: disclaimer,
           image: scenario.image,
         },
         {

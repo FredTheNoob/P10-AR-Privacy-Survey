@@ -183,7 +183,7 @@ export default function Home() {
           break;
 
         case "rank":
-          question.answer ??= "None,Replacing,Blur,Black box";
+          question.answer ??= "None,Generative Censoring,Blur,Black box";
           question.answeredAt ??= new Date();
         break;
       }
@@ -225,6 +225,7 @@ export default function Home() {
       return;
     }
 
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     // change the page
     setCurrentPage((prevPage) => prevPage + 1);
   }
