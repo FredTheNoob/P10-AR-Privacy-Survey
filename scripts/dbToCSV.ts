@@ -36,77 +36,76 @@ async function main() {
 
     console.log("Writing CSV header...");
     // Add all of the row headers to the CSV file
-    const userIds = await prisma.user.findMany({
-        select: {
-            prolificId: true
-        },
-        orderBy: {
-            prolificId: "asc"
-        }
-    });
-
     const headers = [
-        "question",
-        "censoringMethod",
-        "scenario",
+        "prolificId",
+        "time",
         "trial#",
-        ...userIds.map((u) => `user_${u.prolificId}_answer,user_${u.prolificId}_time`),
+        "scenario",
+        "censoringMethod",
+        "question",
+        "answer",
     ];
 
     fs.writeFileSync(targetFile, headers.join(",") + "\n", {encoding: "utf-8"});
 
     console.log("CSV header written.");
 
-    const surveyQuestions = await prisma.surveyQuestion.findMany({
-        orderBy: [
-            { pageIndex: "asc" },
-            { questionIndex: "asc" },
-        ],
+    const userAnswers = await prisma.user.findMany({
         include: {
             responses: {
-                orderBy: {
-                    userId: "asc",
-                },
+                orderBy: [
+                    {
+                        question: {
+                            pageIndex: "asc",
+                        },
+                    },
+                    {
+                        question: {
+                            questionIndex: "asc",
+                        },
+                    },
+                ],
                 select: {
                     userId: true,
                     answer: true,
                     questionId: true,
                     answeredAt: true,
+                    question: {
+                        select: {
+                            pageIndex: true,
+                            questionIndex: true,
+                            title: true,
+                            censoringMethod: true,
+                            scenario: true,
+                        },
+                    },
                 },
             },
         },
     });
 
-    console.log(`Writing ${surveyQuestions.length} survey question answers to CSV...`);
+    console.log(`Writing ${userAnswers.length} survey question answers to CSV...`);
 
-    let i = 1;
-    for (const question of surveyQuestions) {
-        if (question.type === "info") continue;
+    for (const userAnswer of userAnswers) {
+        let i = 1;
+        for (const response of userAnswer.responses) {
+            const row = [
+                csvEscape(response.userId),
+                csvEscape(formatCEST(response.answeredAt)),
+                csvEscape(i.toString()),
+                csvEscape(response.question.scenario ?? "null"),
+                csvEscape(response.question.censoringMethod ?? "null"),
+                csvEscape(response.question.title),
+                csvEscape(response.answer),
+            ];
 
-        const row = [
-            csvEscape(question.title),
-            csvEscape(question.censoringMethod ?? "null"),
-            csvEscape(question.scenario ?? "null"),
-            csvEscape(i.toString())
-        ];
-
-        for (const user of userIds) {
-            const userResponse = question.responses.find((r) => r.userId === user.prolificId && r.questionId === question.id);
-
-            if (!userResponse) {
-                row.push(csvEscape("null"));
-                row.push(csvEscape("null"));
-            } else {
-                row.push(csvEscape(userResponse.answer ?? "null"));
-                row.push(csvEscape(formatCEST(userResponse.answeredAt)));
-            }
+            fs.appendFileSync(targetFile, row.join(",") + "\n", {encoding: "utf-8"});
+            console.log(`${i}/${userAnswer.responses.length} questions written to CSV...`);
+            i++;
         }
-
-        fs.appendFileSync(targetFile, row.join(",") + "\n", {encoding: "utf-8"});
-        console.log(`${i}/${surveyQuestions.length} questions written to CSV...`);
-        i++;
+            
     }
-    console.log(`${surveyQuestions.length}/${surveyQuestions.length} questions written to CSV...`);
+    console.log(`${userAnswers.length}/${userAnswers.length} questions written to CSV...`);
 }
 
 main()
