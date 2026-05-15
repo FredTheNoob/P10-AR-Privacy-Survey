@@ -12,6 +12,7 @@ type DbQuestion = {
   required: boolean | null;
   visible: boolean;
   isScenario: boolean;
+  isAIAnswer: boolean;
 };
 
 type PageType = "question" | "info";
@@ -56,6 +57,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
         id: row.id,
         title: row.title ?? "",
         required: row.required ?? undefined,
+        isAIAnswer: row.isAIAnswer,
       };
 
       switch (row.type) {
