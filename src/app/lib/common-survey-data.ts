@@ -69,7 +69,7 @@ export const ScenarioQuestions = (
           isScenario: true,
           type: "info",
           title: aiQuestion,
-          lines: [scenarioDescription, `❓ We asked the AI: "${aiQuestion}"`],
+          lines: [{type: "text", src: `${scenarioDescription}\n ❓ We asked the AI: "${aiQuestion}`}],
           footer: disclaimer,
           image: scenario.image,
         },
@@ -109,7 +109,7 @@ export const ScenarioQuestions = (
         },
         {
           ...baseScenarioQuestion,
-          title: `💬 The AI answered: "${scenario.aiAnswer}" I think the answer is of good quality.`,
+          title: `💬 The AI answered: "${scenario.aiAnswer}"\n I think the answer is of good quality.`,
           ...AgreeDisagreeOptions,
         },
       ],

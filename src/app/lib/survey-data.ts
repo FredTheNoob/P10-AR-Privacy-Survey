@@ -140,9 +140,18 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
             {
                 type: "info",
                 lines: [
-                    "To study privacy perceptions in realistic scenarios, we recorded a set of first-person videos using wearable smart glasses, specifically the Ray-Ban Meta Wayfare Gen 2 Glasses. The glasses are equipped with an embedded camera that enables hands-free video recording, closely reflecting how AR systems may passively observe and process visual information in real-world use.",
-                    "The recordings capture everyday situations from the perspective of the wearer, including interactions in both public and private environments.",
-                    "These recordings are used solely for research purposes. In this survey you will be shown a set of images from these recordings to evaluate privacy implications in a realistic AR context."
+                    { type: "text", src: "To study privacy perceptions in realistic scenarios, we recorded a set of first-person videos using wearable smart glasses, specifically the Ray-Ban Meta Wayfare Gen 2 Glasses. The glasses are equipped with an embedded camera that enables hands-free video recording, closely reflecting how AR systems may passively observe and process visual information in real-world use." },
+                    { type: "text", src: "The recordings capture everyday situations from the perspective of the wearer, including interactions in both public and private environments." },
+                    { type: "text", src: "These recordings are used solely for research purposes. In this survey you will be shown a set of images from these recordings to evaluate privacy implications in a realistic AR context." },
+                    { type: "text", src: "One of four privacy-preserving measures will be applied to the images shown. The four privacy-preserving measures are (shown with examples):" },
+                    { type: "text", src: "None: Nothing done to the image." },
+                    { type: "image", src: "/frames/None/Scenario-1-03-frame_278.jpg" },
+                    { type: "text", src: "Black boxes: Draws a black box over the privacy sensitive object, such as a face." },
+                    { type: "image", src: "/frames/BlackBoxes/Scenario-1-03-black_box-frame_278.jpg" },
+                    { type: "text", src: "Blur: Draws a blurred square over the privacy sensitive object, such as a face." },
+                    { type: "image", src: "/frames/Blur/Scenario-1-03-blur-frame_278.jpg" },
+                    { type: "text", src: "Generative Censoring: Draws an AI-generated picture over the privacy sensitive object." },
+                    { type: "image", src: "/frames/FLUX/flux-Scenario-1-03-frame_278.jpg" },
                 ]
             }
         ],

@@ -50,7 +50,7 @@ export type RankQuestion = BaseQuestion & {
 export type InformationPage = {
     id?: string
     type: "info";
-    lines: string[];
+    lines: { type: string, src: string }[];
     footer?: string;
     image?: string;
 }

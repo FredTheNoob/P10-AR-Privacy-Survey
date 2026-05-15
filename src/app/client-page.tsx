@@ -279,6 +279,10 @@ export default function Home() {
               />
 
               <p>
+                The study has been approved by the Aalborg University Ethics Committee (case-no: 2026-505-00799).
+              </p>
+
+              <p>
                 This survey takes approximately 35-40 minutes to complete.
               </p>
             </div>
@@ -339,7 +343,33 @@ export default function Home() {
                       </p>
                     </>
                   )}
-                  {page.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                  {page.lines.map((line, lineIndex) => {
+                    if (line.type === "text") {
+                      return <p key={lineIndex}>{line.src}</p>;
+                    }
+
+                    if (line.type === "image") {
+                      return (
+                        <div key={lineIndex} className="space-y-2">
+                          <a
+                            href={line.src}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-center"
+                          >
+                            <img
+                              src={line.src}
+                              className="mx-auto w-full sm:max-w-2xl lg:max-w-4xl max-h-[60vh] object-contain rounded-lg"
+                            />
+                          </a>
+
+                          <p className="text-center text-sm text-gray-500">
+                            Click the image to enlarge.
+                          </p>
+                        </div>
+                      );
+                    }
+                  })}
                   {page.footer && <p className="text-sm text-gray-500">{page.footer}</p>}
                 </div>
               )
