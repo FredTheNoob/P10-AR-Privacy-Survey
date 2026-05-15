@@ -29,7 +29,7 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       min?: number;
       max?: number;
       value?: string;
-      lines?: string[];
+      lines?: { type: string, src: string }[];
       multiline?: boolean;
       footer?: string;
     };
