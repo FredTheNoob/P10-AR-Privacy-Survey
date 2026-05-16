@@ -72,6 +72,7 @@ export const ScenarioQuestions = (
           lines: [{type: "text", src: `${scenarioDescription}\n ❓ We asked the AI: "${aiQuestion}`}],
           footer: disclaimer,
           image: scenario.image,
+          censoringMethod: scenario.censoringMethod,
         },
         {
           ...baseScenarioQuestion,

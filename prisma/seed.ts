@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { CensoringMethod, PrismaClient } from "@prisma/client";
 import { SURVEY_DATA } from "~/app/lib/survey-data";
 
 const prisma = new PrismaClient();
@@ -29,6 +29,15 @@ async function main() {
           required: "required" in q ? q.required : true,
         }))
     )})
+
+  await prisma.randomCensoringMethod.createMany({
+    data: [
+      { censoringMethod: CensoringMethod.BLUR },
+      { censoringMethod: CensoringMethod.BLACK_BOX },
+      { censoringMethod: CensoringMethod.GEN_CENSORING },
+    ],
+    skipDuplicates: true,
+  })
 }
 
 main()

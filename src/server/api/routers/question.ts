@@ -1,6 +1,7 @@
 import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import type { JsonValue } from "@prisma/client/runtime/library";
+import { CensoringMethod } from "@prisma/client";
 
 type DbQuestion = {
   id: string;
@@ -19,7 +20,6 @@ type PageType = "question" | "info";
 export function toSurveyData(rows: DbQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
   const pages: SurveyContent[][] = [];
-  const pageTypes: Record<number, PageType> = {};
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
     const page = row.pageIndex ?? 0;
@@ -37,7 +37,6 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     // Initialize page if missing
     if (!pages[page]) {
       pages[page] = row.type === "info" ? [] as InformationPage[] : [] as Question[];
-      pageTypes[page] = row.type === "info" ? "info" : "question";
     }
 
 
@@ -93,15 +92,54 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     }
   }
 
-  pages[0] = [];
-  surveyData.pages = pages
+  const compactPages = pages.filter(p => p !== undefined);
+  
+  compactPages[0] = [];
+  surveyData.pages = compactPages
 
   return surveyData;
 }
 
 export const surveyRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
+    // Get a random Censoring Method from the database and remove it
+    const count = await ctx.db.randomCensoringMethod.count()
+
+    const randomIndex = Math.floor(Math.random() * count)
+
+    const randomMethod = await ctx.db.randomCensoringMethod.findFirst({
+      skip: randomIndex,
+    })
+
+    if (!randomMethod) throw new Error('Failed to get random censoring method')
+
+    await ctx.db.randomCensoringMethod.delete({
+      where: {
+        censoringMethod: randomMethod.censoringMethod,
+      },
+    })
+    
+    // If no more Censoring Methods in the database refill
+    if (count == 1) {
+      await ctx.db.randomCensoringMethod.createMany({
+        data: [
+          { censoringMethod: CensoringMethod.BLUR },
+          { censoringMethod: CensoringMethod.BLACK_BOX },
+          { censoringMethod: CensoringMethod.GEN_CENSORING },
+        ],
+        skipDuplicates: true,
+      })
+    }
+    
+    // Get Survey Questions based on the Censoring Method
     const rows = await ctx.db.surveyQuestion.findMany({
+      where: {
+        OR: [
+          { censoringMethod: randomMethod.censoringMethod },
+          { censoringMethod: CensoringMethod.NONE },
+          { isScenario: false },
+        ],
+      },
       orderBy: [
         { pageIndex: "asc" },
         { questionIndex: "asc" },
