@@ -75,9 +75,10 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
     }
   }
 
-  const compactPages = pages.filter(p => p !== undefined);
   
-  compactPages[0] = [];
+  pages[0] = [];
+  const compactPages = pages.filter(p => p !== undefined);
+
   surveyData.pages = compactPages
 
   return surveyData;
