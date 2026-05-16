@@ -326,24 +326,24 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 title: "I am comfortable with others sending a video/image with me to an AI to get their question answered.",
                 ...AgreeDisagreeOptions
             },
-            {
-                required: false,
-                title: "Which censoring methods are most effective at protecting user privacy? Rank them.",
-                type: "rank",
-                options: [
-                    "None",
-                    "Generative Censoring",
-                    "Blur",
-                    "Black box"
-                ],
-                answer: "None,Generative Censoring,Blur,Black box"
-            },
-            {
-                title: "Why did you pick this ranking?",
-                type: "text",
-                value: "",
-                multiline: true
-            },
+            // {
+            //     required: false,
+            //     title: "Which censoring methods are most effective at protecting user privacy? Rank them.",
+            //     type: "rank",
+            //     options: [
+            //         "None",
+            //         "Generative Censoring",
+            //         "Blur",
+            //         "Black box"
+            //     ],
+            //     answer: "None,Generative Censoring,Blur,Black box"
+            // },
+            // {
+            //     title: "Why did you pick this ranking?",
+            //     type: "text",
+            //     value: "",
+            //     multiline: true
+            // },
             {
                 title: "Does your willingness to share videos/images with an AI depend on your relationship with the people in the video/image?",
                 type: "radio",

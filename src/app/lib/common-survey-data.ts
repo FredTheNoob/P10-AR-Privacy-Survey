@@ -73,6 +73,7 @@ export const ScenarioQuestions = (
           footer: disclaimer,
           image: scenario.image,
           censoringMethod: scenario.censoringMethod,
+          scenario: scenarioType,
         },
         {
           ...baseScenarioQuestion,
@@ -107,6 +108,7 @@ export const ScenarioQuestions = (
           title: scenario.aiAnswer,
           image: scenario.image,
           censoringMethod: scenario.censoringMethod,
+          scenario: scenarioType,
         },
         {
           ...baseScenarioQuestion,

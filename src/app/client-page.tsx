@@ -191,7 +191,6 @@ export default function Home() {
     if (errorObj.hasError) return;
 
     localStorage.setItem("surveyAnswers", JSON.stringify(questions));
-    console.log(questions)
     localStorage.setItem("currentPage", (currentPage + 1).toString());
 
     if (currentPage === questions.pages.length - 1) {
