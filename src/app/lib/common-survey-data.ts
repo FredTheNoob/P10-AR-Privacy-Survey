@@ -112,7 +112,8 @@ export const ScenarioQuestions = (
         },
         {
           ...baseScenarioQuestion,
-          title: `💬 The AI answered: "${scenario.aiAnswer}"\n I think the answer is of good quality.`,
+          title: `"${scenario.aiAnswer}" I think the answer is of good quality.`,
+          isAIAnswer: true,
           ...AgreeDisagreeOptions,
         },
       ],

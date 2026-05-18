@@ -35,6 +35,7 @@ model SurveyQuestion {
   required   Boolean @default(true)
   visible    Boolean @default(true)
   isScenario Boolean @default(false)
+  isAIAnswer Boolean @default(false)
 
   config Json? // all extra dynamic fields (options, min/max, etc.)
 

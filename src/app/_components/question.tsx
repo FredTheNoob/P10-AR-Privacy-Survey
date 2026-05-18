@@ -24,7 +24,7 @@ const swapOptions = (options: string[], from: number, to: number) => {
 export default function Question({ index, question, onChange, onOptionInputChange, onRankReorder }: QuestionProps) {
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="mb-4 text-base font-semibold text-gray-900">{question.title}</p>
+            <p className="mb-4 text-base font-semibold text-gray-900">{question.isAIAnswer ? `💬 The AI answered: ${question.title}` : question.title}</p>
 
             {question.type === "number" && (
                 <input

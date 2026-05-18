@@ -38,6 +38,7 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
         id: row.id,
         title: row.title ?? "",
         required: row.required ?? undefined,
+        isAIAnswer: row.isAIAnswer,
       };
 
       switch (row.type) {

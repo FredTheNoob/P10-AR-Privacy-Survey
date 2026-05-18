@@ -8,6 +8,7 @@ export type BaseQuestion = {
     answer?: string;
     error?: string;
     isScenario?: boolean;
+    isAIAnswer?: boolean;
     censoringMethod?: CensoringMethod;
     scenario?: Scenario;
     answeredAt?: Date;

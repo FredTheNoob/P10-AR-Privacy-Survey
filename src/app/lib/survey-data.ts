@@ -182,141 +182,141 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 },
             ],
         ),
-        ...ScenarioQuestions(
-            "DUCKS",
-            "You are going for a walk and stumble upon a pond.",
-            "What type of duck is this?",
-            [
-                {
-                    image: "/frames/None/Scenario-2-05-frame_174.jpg",
-                    aiAnswer: "That's a mallard duck. The sign shows a female mallard with ducklings, and there's one swimming by the boardwalk.",
-                    censoringMethod: "NONE"
-                },
-                {
-                    image: "/frames/Blur/Scenario-2-05-blur-frame_174.jpg",
-                    aiAnswer: "That's a mallard. It's a female with ducklings, based on the brown mottled feathers and orange bill on the sign.",
-                    censoringMethod: "BLUR"
-                },
-                {
-                    image: "/frames/BlackBoxes/Scenario-2-05-black_box-frame_174.jpg",
-                    aiAnswer: "Looks like a female mallard, based on the brown mottled feathers and ducklings on the sign.",
-                    censoringMethod: "BLACK_BOX"
-                },
-                {
-                    image: "/frames/FLUX/flux-Scenario-2-05-frame_174.jpg",
-                    aiAnswer: "Looks like a mallard. That's the duck on the sign with the brown mottled feathers and ducklings.",
-                    censoringMethod: "GEN_CENSORING"
-                },
-            ],
-        ),
-        ...ScenarioQuestions(
-            "GROUP_EXERCISE",
-            "You are at a group exercise.",
-            "What points should we consider to get started on this group activity?",
-            [
-                {
-                    image: "/frames/None/Scenario-3-02-frame_137.jpg",
-                    aiAnswer: "Start by listing the two risks: launch buggy now and hurt the brand, or delay six weeks and miss commitments. Then decide which hurts customers more. You've got ten minutes, so pick a timekeeper and a note taker to keep it moving.",
-                    censoringMethod: "NONE"
-                },
-                {
-                    image: "/frames/Blur/Scenario-3-02-blur-frame_137.jpg",
-                    aiAnswer: "Start by outlining the two options: delay 6 weeks to fix issues, or launch on time and risk complaints. Then weigh the costs: brand damage vs revenue loss from delay.",
-                    censoringMethod: "BLUR"
-                },
-                {
-                    image: "/frames/BlackBoxes/Scenario-3-02-black_box-frame_137.jpg",
-                    aiAnswer: "Start by weighing the trade-offs: delay 6 weeks to fix issues, or launch on time and risk complaints and brand damage. Then pick roles fast, list pros and cons of each option, and decide on your recommendation within 10 minutes.",
-                    censoringMethod: "BLACK_BOX"
-                },
-                {
-                    image: "/frames/FLUX/flux-Scenario-3-02-frame_137.jpg",
-                    aiAnswer: "Start by listing the two core options: delay launch to fix issues, or launch on time and risk complaints. Then weigh key points: customer impact, brand damage, cost of a 6-week delay, and possible middle ground like a limited release.",
-                    censoringMethod: "GEN_CENSORING"
-                },
-            ],
-        ),
-        ...ScenarioQuestions(
-            "PARKING_LOT",
-            "You are at a parking lot looking for your car.",
-            "Where is my car? It is a silver/grey Chevrolet Spark",
-            [
-                {
-                    image: "/frames/None/Scenario-4-05-frame_532.jpg",
-                    aiAnswer: "I don't see a silver or grey Chevrolet Spark in this view. Try checking the rows to your right or behind you.",
-                    censoringMethod: "NONE"
-                },
-                {
-                    image: "/frames/Blur/Scenario-4-05-blur-frame_532.jpg",
-                    aiAnswer: "I don't see a silver or grey Chevrolet Spark in this view. The closest silver car on your left is a BMW. Try looking further down the row or in the next section of the lot.",
-                    censoringMethod: "BLUR"
-                },
-                {
-                    image: "/frames/BlackBoxes/Scenario-4-05-black_box-frame_532.jpg",
-                    aiAnswer: "I don't see a silver Chevrolet Spark in this view. Try panning your head slowly left or right so I can scan more of the lot.",
-                    censoringMethod: "BLACK_BOX"
-                },
-                {
-                    image: "/frames/FLUX/flux-Scenario-4-05-frame_532.jpg",
-                    aiAnswer: "I don't see your silver Chevrolet Spark in this view. Try looking further down the row or checking the next aisle.",
-                    censoringMethod: "GEN_CENSORING"
-                },
-            ],
-        ),
-        ...ScenarioQuestions(
-            "AT_HOME_COUCH",
-            "You are inside your home.",
-            "Would my room look better if I moved my sofa to the left corner?",
-            [
-                {
-                    image: "/frames/None/Scenario-5-01-frame_1103.jpg",
-                    aiAnswer: "Yes, moving it to the left corner by the guitar would open up the space and balance the room better. It'd make the doorway feel less blocked.",
-                    censoringMethod: "NONE"
-                },
-                {
-                    image: "/frames/Blur/Scenario-5-01-blur-frame_1103.jpg",
-                    aiAnswer: "Yes, moving the sofa to that left corner would open up the room. It creates more floor space and gives you a clearer walkway from the door.",
-                    censoringMethod: "BLUR"
-                },
-                {
-                    image: "/frames/BlackBoxes/Scenario-5-01-black_box-frame_1103.jpg",
-                    aiAnswer: "Yes, moving the sofa to the left corner would open up the space and balance the room better with the chair. It'll feel less crowded on the right side.",
-                    censoringMethod: "BLACK_BOX"
-                },
-                {
-                    image: "/frames/FLUX/flux-Scenario-5-01-frame_1103.jpg",
-                    aiAnswer: "Yes, moving the sofa to that left corner would open up the room. It'll face away from the doorway and make the space feel bigger.",
-                    censoringMethod: "GEN_CENSORING"
-                },
-            ],
-        ),
-        ...ScenarioQuestions(
-            "AT_HOME_TV_REMOTE",
-            "You are inside your home.",
-            "Where is the TV remote?",
-            [
-                {
-                    image: "/frames/None/Scenario-6-03-frame_51.jpg",
-                    aiAnswer: "It's on the bed, bottom right, by your leg.",
-                    censoringMethod: "NONE"
-                },
-                {
-                    image: "/frames/Blur/Scenario-6-03-blur-frame_51.jpg",
-                    aiAnswer: "It's on the bed to your right, next to your leg.",
-                    censoringMethod: "BLUR"
-                },
-                {
-                    image: "/frames/BlackBoxes/Scenario-6-03-black_box-frame_51.jpg",
-                    aiAnswer: "It's on your right, at the edge of the bed.",
-                    censoringMethod: "BLACK_BOX"
-                },
-                {
-                    image: "/frames/FLUX/flux-Scenario-6-03-frame_51.jpg",
-                    aiAnswer: "It's on the bed to your right, near the edge.",
-                    censoringMethod: "GEN_CENSORING"
-                },
-            ],
-        ),
+        // ...ScenarioQuestions(
+        //     "DUCKS",
+        //     "You are going for a walk and stumble upon a pond.",
+        //     "What type of duck is this?",
+        //     [
+        //         {
+        //             image: "/frames/None/Scenario-2-05-frame_174.jpg",
+        //             aiAnswer: "That's a mallard duck. The sign shows a female mallard with ducklings, and there's one swimming by the boardwalk.",
+        //             censoringMethod: "NONE"
+        //         },
+        //         {
+        //             image: "/frames/Blur/Scenario-2-05-blur-frame_174.jpg",
+        //             aiAnswer: "That's a mallard. It's a female with ducklings, based on the brown mottled feathers and orange bill on the sign.",
+        //             censoringMethod: "BLUR"
+        //         },
+        //         {
+        //             image: "/frames/BlackBoxes/Scenario-2-05-black_box-frame_174.jpg",
+        //             aiAnswer: "Looks like a female mallard, based on the brown mottled feathers and ducklings on the sign.",
+        //             censoringMethod: "BLACK_BOX"
+        //         },
+        //         {
+        //             image: "/frames/FLUX/flux-Scenario-2-05-frame_174.jpg",
+        //             aiAnswer: "Looks like a mallard. That's the duck on the sign with the brown mottled feathers and ducklings.",
+        //             censoringMethod: "GEN_CENSORING"
+        //         },
+        //     ],
+        // ),
+        // ...ScenarioQuestions(
+        //     "GROUP_EXERCISE",
+        //     "You are at a group exercise.",
+        //     "What points should we consider to get started on this group activity?",
+        //     [
+        //         {
+        //             image: "/frames/None/Scenario-3-02-frame_137.jpg",
+        //             aiAnswer: "Start by listing the two risks: launch buggy now and hurt the brand, or delay six weeks and miss commitments. Then decide which hurts customers more. You've got ten minutes, so pick a timekeeper and a note taker to keep it moving.",
+        //             censoringMethod: "NONE"
+        //         },
+        //         {
+        //             image: "/frames/Blur/Scenario-3-02-blur-frame_137.jpg",
+        //             aiAnswer: "Start by outlining the two options: delay 6 weeks to fix issues, or launch on time and risk complaints. Then weigh the costs: brand damage vs revenue loss from delay.",
+        //             censoringMethod: "BLUR"
+        //         },
+        //         {
+        //             image: "/frames/BlackBoxes/Scenario-3-02-black_box-frame_137.jpg",
+        //             aiAnswer: "Start by weighing the trade-offs: delay 6 weeks to fix issues, or launch on time and risk complaints and brand damage. Then pick roles fast, list pros and cons of each option, and decide on your recommendation within 10 minutes.",
+        //             censoringMethod: "BLACK_BOX"
+        //         },
+        //         {
+        //             image: "/frames/FLUX/flux-Scenario-3-02-frame_137.jpg",
+        //             aiAnswer: "Start by listing the two core options: delay launch to fix issues, or launch on time and risk complaints. Then weigh key points: customer impact, brand damage, cost of a 6-week delay, and possible middle ground like a limited release.",
+        //             censoringMethod: "GEN_CENSORING"
+        //         },
+        //     ],
+        // ),
+        // ...ScenarioQuestions(
+        //     "PARKING_LOT",
+        //     "You are at a parking lot looking for your car.",
+        //     "Where is my car? It is a silver/grey Chevrolet Spark",
+        //     [
+        //         {
+        //             image: "/frames/None/Scenario-4-05-frame_532.jpg",
+        //             aiAnswer: "I don't see a silver or grey Chevrolet Spark in this view. Try checking the rows to your right or behind you.",
+        //             censoringMethod: "NONE"
+        //         },
+        //         {
+        //             image: "/frames/Blur/Scenario-4-05-blur-frame_532.jpg",
+        //             aiAnswer: "I don't see a silver or grey Chevrolet Spark in this view. The closest silver car on your left is a BMW. Try looking further down the row or in the next section of the lot.",
+        //             censoringMethod: "BLUR"
+        //         },
+        //         {
+        //             image: "/frames/BlackBoxes/Scenario-4-05-black_box-frame_532.jpg",
+        //             aiAnswer: "I don't see a silver Chevrolet Spark in this view. Try panning your head slowly left or right so I can scan more of the lot.",
+        //             censoringMethod: "BLACK_BOX"
+        //         },
+        //         {
+        //             image: "/frames/FLUX/flux-Scenario-4-05-frame_532.jpg",
+        //             aiAnswer: "I don't see your silver Chevrolet Spark in this view. Try looking further down the row or checking the next aisle.",
+        //             censoringMethod: "GEN_CENSORING"
+        //         },
+        //     ],
+        // ),
+        // ...ScenarioQuestions(
+        //     "AT_HOME_COUCH",
+        //     "You are inside your home.",
+        //     "Would my room look better if I moved my sofa to the left corner?",
+        //     [
+        //         {
+        //             image: "/frames/None/Scenario-5-01-frame_1103.jpg",
+        //             aiAnswer: "Yes, moving it to the left corner by the guitar would open up the space and balance the room better. It'd make the doorway feel less blocked.",
+        //             censoringMethod: "NONE"
+        //         },
+        //         {
+        //             image: "/frames/Blur/Scenario-5-01-blur-frame_1103.jpg",
+        //             aiAnswer: "Yes, moving the sofa to that left corner would open up the room. It creates more floor space and gives you a clearer walkway from the door.",
+        //             censoringMethod: "BLUR"
+        //         },
+        //         {
+        //             image: "/frames/BlackBoxes/Scenario-5-01-black_box-frame_1103.jpg",
+        //             aiAnswer: "Yes, moving the sofa to the left corner would open up the space and balance the room better with the chair. It'll feel less crowded on the right side.",
+        //             censoringMethod: "BLACK_BOX"
+        //         },
+        //         {
+        //             image: "/frames/FLUX/flux-Scenario-5-01-frame_1103.jpg",
+        //             aiAnswer: "Yes, moving the sofa to that left corner would open up the room. It'll face away from the doorway and make the space feel bigger.",
+        //             censoringMethod: "GEN_CENSORING"
+        //         },
+        //     ],
+        // ),
+        // ...ScenarioQuestions(
+        //     "AT_HOME_TV_REMOTE",
+        //     "You are inside your home.",
+        //     "Where is the TV remote?",
+        //     [
+        //         {
+        //             image: "/frames/None/Scenario-6-03-frame_51.jpg",
+        //             aiAnswer: "It's on the bed, bottom right, by your leg.",
+        //             censoringMethod: "NONE"
+        //         },
+        //         {
+        //             image: "/frames/Blur/Scenario-6-03-blur-frame_51.jpg",
+        //             aiAnswer: "It's on the bed to your right, next to your leg.",
+        //             censoringMethod: "BLUR"
+        //         },
+        //         {
+        //             image: "/frames/BlackBoxes/Scenario-6-03-black_box-frame_51.jpg",
+        //             aiAnswer: "It's on your right, at the edge of the bed.",
+        //             censoringMethod: "BLACK_BOX"
+        //         },
+        //         {
+        //             image: "/frames/FLUX/flux-Scenario-6-03-frame_51.jpg",
+        //             aiAnswer: "It's on the bed to your right, near the edge.",
+        //             censoringMethod: "GEN_CENSORING"
+        //         },
+        //     ],
+        // ),
         [
             {
                 title: "I am comfortable with sending a video/image with other people to an AI to get my question answered.",
