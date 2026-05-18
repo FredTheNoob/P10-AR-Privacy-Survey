@@ -1,26 +1,10 @@
 import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import type { JsonValue } from "@prisma/client/runtime/library";
+import { CensoringMethod, type Scenario, type SurveyQuestion } from "@prisma/client";
 
-type DbQuestion = {
-  id: string;
-  title: string | null;
-  type: string;
-  pageIndex: number | null;
-  config: JsonValue | null;
-  imageName: string | null;
-  required: boolean | null;
-  visible: boolean;
-  isScenario: boolean;
-  isAIAnswer: boolean;
-};
-
-type PageType = "question" | "info";
-
-export function toSurveyData(rows: DbQuestion[]): SurveyData {
+export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
   const pages: SurveyContent[][] = [];
-  const pageTypes: Record<number, PageType> = {};
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
     const page = row.pageIndex ?? 0;
@@ -30,16 +14,13 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
       min?: number;
       max?: number;
       value?: string;
-      lines?: string[];
+      lines?: { type: string, src: string }[];
       multiline?: boolean;
       footer?: string;
     };
 
     // Initialize page if missing
-    if (!pages[page]) {
-      pages[page] = row.type === "info" ? [] as InformationPage[] : [] as Question[];
-      pageTypes[page] = row.type === "info" ? "info" : "question";
-    }
+    pages[page] ??= row.type === "info" ? [] as InformationPage[] : [] as Question[];
 
 
     if (row.type === "info") {
@@ -95,22 +76,132 @@ export function toSurveyData(rows: DbQuestion[]): SurveyData {
     }
   }
 
+  
   pages[0] = [];
-  surveyData.pages = pages
+  const compactPages = pages.filter(p => p !== undefined);
+
+  surveyData.pages = compactPages
 
   return surveyData;
 }
 
 export const surveyRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
+    // Get a random Censoring Method from the database and remove it
+    const count = await ctx.db.randomCensoringMethod.count()
+
+    const randomIndex = Math.floor(Math.random() * count)
+
+    const randomMethod = await ctx.db.randomCensoringMethod.findFirst({
+      skip: randomIndex,
+    })
+
+    if (!randomMethod) throw new Error('Failed to get random censoring method')
+
+    await ctx.db.randomCensoringMethod.delete({
+      where: {
+        censoringMethod: randomMethod.censoringMethod,
+      },
+    })
+    
+    // If no more Censoring Methods in the database refill
+    if (count == 1) {
+      await ctx.db.randomCensoringMethod.createMany({
+        data: [
+          { censoringMethod: CensoringMethod.BLUR },
+          { censoringMethod: CensoringMethod.BLACK_BOX },
+          { censoringMethod: CensoringMethod.GEN_CENSORING },
+        ],
+        skipDuplicates: true,
+      })
+    }
+    
+    // Get Survey Questions based on the Censoring Method
     const rows = await ctx.db.surveyQuestion.findMany({
+      where: {
+        OR: [
+          { censoringMethod: randomMethod.censoringMethod },
+          { censoringMethod: CensoringMethod.NONE },
+          { isScenario: false },
+        ],
+      },
       orderBy: [
         { pageIndex: "asc" },
         { questionIndex: "asc" },
       ],
     });
+    
+    // Randomly select 3 scenarios to be None and 3 to be the randomly selected method
+    const byScenario = new Map<Scenario, SurveyQuestion[]>();
 
-    const data = toSurveyData(rows);
+    for (const row of rows) {
+      const key = row.scenario;
+      if (key == null) continue;
+      if (!byScenario.has(key)) byScenario.set(key, []);
+      byScenario.get(key)!.push(row);
+    }
+
+    const scenarios = Array.from(byScenario.keys());
+
+    // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+    for (let i = scenarios.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [scenarios[i], scenarios[j]] = [scenarios[j]!, scenarios[i]!];
+    }
+
+    const selectedNone = scenarios.slice(0, 3);
+    const selectedRandom = scenarios.slice(3, 6);
+
+    const isScenarioRow = (row: SurveyQuestion) => row.isScenario == true;
+
+    let firstScenarioIndex = -1;
+    let lastScenarioIndex = -1;
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row) continue;
+
+      if (isScenarioRow(row)) {
+        if (firstScenarioIndex === -1) firstScenarioIndex = i;
+        lastScenarioIndex = i;
+      }
+    }
+
+    const scenarioRows: SurveyQuestion[] = [];
+
+    const introRows =
+      firstScenarioIndex !== -1
+        ? rows.slice(0, firstScenarioIndex)
+        : [];
+
+    const outroRows =
+      lastScenarioIndex !== -1
+        ? rows.slice(lastScenarioIndex + 1)
+        : [];
+
+    for (const id of selectedNone) {
+      const scenario = byScenario.get(id)!;
+
+      scenarioRows.push(
+        ...scenario.filter(r => r.censoringMethod === CensoringMethod.NONE)
+      );
+    }
+
+    for (const id of selectedRandom) {
+      const scenario = byScenario.get(id)!;
+
+      scenarioRows.push(
+        ...scenario.filter(r => r.censoringMethod === randomMethod.censoringMethod)
+      );
+    }
+
+    const selectedRows: SurveyQuestion[] = [
+      ...introRows.flat(),
+      ...scenarioRows,
+      ...outroRows.flat(),
+    ];
+
+    const data = toSurveyData(selectedRows);
 
     const isScenarioPage = (page: SurveyContent[]) =>
       page.some((item) => "isScenario" in item && item.isScenario === true);

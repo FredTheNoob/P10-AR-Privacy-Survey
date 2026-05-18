@@ -49,6 +49,10 @@ model SurveyQuestion {
   responses Response[]
 }
 
+model RandomCensoringMethod {
+  censoringMethod  CensoringMethod   @unique
+}
+
 enum CensoringMethod {
   NONE
   BLUR
