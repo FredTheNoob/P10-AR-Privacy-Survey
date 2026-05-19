@@ -283,7 +283,7 @@ export default function Home() {
               </p>
 
               <p>
-                This survey takes approximately 35-40 minutes to complete.
+                This survey takes approximately 15-20 minutes to complete.
               </p>
             </div>
             <button
