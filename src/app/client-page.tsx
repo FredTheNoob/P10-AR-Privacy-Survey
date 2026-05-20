@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Question from "./_components/question";
-import { isQuestion, isQuestionRequired, isQuestionVisible, SURVEY_DATA } from "./lib/survey-data";
+import { isQuestion, isQuestionRequired, isQuestionVisible } from "./lib/survey-data";
 import { api } from "~/trpc/react";
 import Spinner from "./_components/spinner";
 import type { Question as QuestionType, SurveyData } from "./lib/survey-types";
@@ -299,7 +299,7 @@ export default function Home() {
               </div>
             </div>
             {questions.pages[currentPage]?.title && (
-              <h2 className="text-3xl font-bold">{questions.pages[currentPage]!.title}</h2>
+              <h2 className="text-3xl font-bold">{questions.pages[currentPage].title}</h2>
             )}
             {questions.pages[currentPage]?.content.map((page, index) =>
               isQuestion(page) ? (
