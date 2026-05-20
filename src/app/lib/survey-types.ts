@@ -59,8 +59,13 @@ export type InformationPage = {
 export type Question = RadioQuestion | NumberQuestion | TextQuestion | RankQuestion;
 export type SurveyContent = Question | InformationPage;
 
+export type SurveyPages = {
+    title?: string;
+    content: SurveyContent[];
+}[];
+
 export type SurveyData = {
-    pages: SurveyContent[][];
+    pages: SurveyPages;
 }
 
 export type ScenarioQuestions = {

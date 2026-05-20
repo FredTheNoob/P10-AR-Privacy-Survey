@@ -5,9 +5,10 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.surveyQuestion.createMany({
-    data: SURVEY_DATA.pages.flatMap((page, pageIndex) =>
-      page
+    data: SURVEY_DATA.pages.flatMap((page, pageIndex) => 
+      page.content
         .map((q, questionIndex) => ({
+          header: page.title,
           visible: "visible" in q ? q.visible : true,
           isScenario: "isScenario" in q ? q.isScenario : false,
           isAIAnswer: "isAIAnswer" in q ? q.isAIAnswer : false,

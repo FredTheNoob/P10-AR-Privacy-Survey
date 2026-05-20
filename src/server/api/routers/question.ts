@@ -1,10 +1,10 @@
-import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, TextRadioOption } from "~/app/lib/survey-types";
+import type { ChooseRadioOption, InformationPage, Question, SurveyContent, SurveyData, SurveyPages, TextRadioOption } from "~/app/lib/survey-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { CensoringMethod, type Scenario, type SurveyQuestion } from "@prisma/client";
 
 export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
   const surveyData: SurveyData = { pages: [] }
-  const pages: SurveyContent[][] = [];
+  const pages: SurveyPages = [];
 
   for (const row of rows.sort((a, b) => (a.pageIndex ?? 0) - (b.pageIndex ?? 0))) {
     const page = row.pageIndex ?? 0;
@@ -20,11 +20,11 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
     };
 
     // Initialize page if missing
-    pages[page] ??= row.type === "info" ? [] as InformationPage[] : [] as Question[];
+    pages[page] ??= { content: row.type === "info" ? [] as InformationPage[] : [] as Question[], title: row.header ?? undefined };
 
 
     if (row.type === "info") {
-      (pages[page] as InformationPage[]).push({
+      (pages[page].content as InformationPage[]).push({
         id: row.id,
         type: "info",
         lines: config.lines ?? [],
@@ -43,7 +43,7 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
 
       switch (row.type) {
         case "number":
-          (pages[page] as Question[]).push({
+          (pages[page].content as Question[]).push({
             ...base,
             type: "number",
             min: config.min,
@@ -51,21 +51,21 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
           });
           break;
         case "radio":
-          (pages[page] as Question[]).push({
+          (pages[page].content as Question[]).push({
             ...base,
             type: "radio",
             options: (config.options as (ChooseRadioOption | TextRadioOption)[]) ?? [],
           });
           break;
         case "rank":
-          (pages[page] as Question[]).push({
+          (pages[page].content as Question[]).push({
             ...base,
             type: "rank",
             options: (config.options as string[]) ?? [],
           });
           break;
         case "text":
-          (pages[page] as Question[]).push({
+          (pages[page].content as Question[]).push({
             ...base,
             type: "text",
             value: config.value ?? "",
@@ -76,8 +76,8 @@ export function toSurveyData(rows: SurveyQuestion[]): SurveyData {
     }
   }
 
-  
-  pages[0] = [];
+
+  pages[0] = { content: [] };
   const compactPages = pages.filter(p => p !== undefined);
 
   surveyData.pages = compactPages
@@ -103,7 +103,7 @@ export const surveyRouter = createTRPCRouter({
         censoringMethod: randomMethod.censoringMethod,
       },
     })
-    
+
     // If no more Censoring Methods in the database refill
     if (count == 1) {
       await ctx.db.randomCensoringMethod.createMany({
@@ -115,7 +115,7 @@ export const surveyRouter = createTRPCRouter({
         skipDuplicates: true,
       })
     }
-    
+
     // Get Survey Questions based on the Censoring Method
     const rows = await ctx.db.surveyQuestion.findMany({
       where: {
@@ -130,7 +130,7 @@ export const surveyRouter = createTRPCRouter({
         { questionIndex: "asc" },
       ],
     });
-    
+
     // Randomly select 3 scenarios to be None and 3 to be the randomly selected method
     const byScenario = new Map<Scenario, SurveyQuestion[]>();
 
@@ -211,7 +211,7 @@ export const surveyRouter = createTRPCRouter({
 
     for (let i = 0; i < data.pages.length; i++) {
       const page = data.pages[i];
-      if (page && isScenarioPage(page)) {
+      if (page && isScenarioPage(page.content)) {
         if (start === -1) start = i;
         end = i + 1;
       } else if (start !== -1) {
@@ -220,11 +220,10 @@ export const surveyRouter = createTRPCRouter({
     }
 
     if (start !== -1 && end !== -1) {
-      const scenarioPages = data.pages.slice(start, end).filter(
-        (page): page is SurveyContent[] => Array.isArray(page)
-      );
+      const scenarioPages = data.pages.slice(start, end);
+      type SurveyPage = SurveyPages[number];
+      const pairs: [SurveyPage, SurveyPage][] = [];
 
-      const pairs: [SurveyContent[], SurveyContent[]][] = [];
       for (let i = 0; i + 1 < scenarioPages.length; i += 2) {
         const first = scenarioPages[i];
         const second = scenarioPages[i + 1];
@@ -232,7 +231,7 @@ export const surveyRouter = createTRPCRouter({
         pairs.push([first, second]);
       }
 
-      // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+      // Fisher-Yates shuffle
       for (let i = pairs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const a = pairs[i];

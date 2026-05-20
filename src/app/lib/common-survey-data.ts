@@ -34,7 +34,7 @@ export const ScenarioQuestions = (
   scenarioDescription: string,
   aiQuestion: string,
   scenarios: SurveyTypes.ScenarioQuestions,
-): SurveyTypes.SurveyContent[][] => {
+): SurveyTypes.SurveyPages => {
   let disclaimer = "";
   const processedDisclaimer = "The image has been processed to remove privacy sensitive information.";
   const notProcessedDisclaimer = "The image has not been processed, so it may contain privacy sensitive information.";
@@ -50,7 +50,7 @@ export const ScenarioQuestions = (
       case CensoringMethod.BLACK_BOX:
         disclaimer = `${processedDisclaimer} It uses a black box censoring method`;
         break;
-    
+
       case CensoringMethod.BLUR:
         disclaimer = `${processedDisclaimer} It uses a blur censoring method`;
         break;
@@ -64,59 +64,67 @@ export const ScenarioQuestions = (
     }
 
     return [
-      [
-        {
+      {
+        title: "Scenarios",
+        content: [
+          {
           isScenario: true,
           type: "info",
           title: aiQuestion,
-          lines: [{type: "text", src: `${scenarioDescription}\n ❓ We asked the AI: "${aiQuestion}`}],
+          lines: [{ type: "text", src: `${scenarioDescription}` }, { type: "text", src: `You ask the AI: "${aiQuestion}"` }],
           footer: disclaimer,
           image: scenario.image,
           censoringMethod: scenario.censoringMethod,
           scenario: scenarioType,
         },
-        {
-          ...baseScenarioQuestion,
-          censoringMethod: scenario.censoringMethod,
-          title: "I am comfortable with this image being processed by an AI system.",
-          ...AgreeDisagreeOptions,
-        },
-        {
-          ...baseScenarioQuestion,
-          title: "I am concerned that personal information from this image could be used maliciously.",
-          ...AgreeDisagreeOptions,
-        },
-        {
-          ...baseScenarioQuestion,
-          title:
-            "I am concerned that personal information from this image could be used for profiling, for example, to deliver targeted advertisements and/or biometrically identify me.",
-          ...AgreeDisagreeOptions,
-        },
-        {
-          ...baseScenarioQuestion,
-          title: "What do you think the AI's answer will be?",
-          type: "text",
-          value: "",
-          multiline: true,
-        },
-      ],
-      [
-        {
+          {
+            ...baseScenarioQuestion,
+            censoringMethod: scenario.censoringMethod,
+            title: "I am comfortable with this image being processed by an AI system.",
+            ...AgreeDisagreeOptions,
+          },
+          {
+            ...baseScenarioQuestion,
+            title: "I am concerned that personal information from this image could be used maliciously.",
+            ...AgreeDisagreeOptions,
+          },
+          {
+            ...baseScenarioQuestion,
+            title:
+              "I am concerned that personal information from this image could be used for profiling, for example, to deliver targeted advertisements and/or biometrically identify me.",
+            ...AgreeDisagreeOptions,
+          },
+          {
+            ...baseScenarioQuestion,
+            title: "What do you think the AI's answer will be?",
+            type: "text",
+            value: "",
+            multiline: true,
+          },
+        ]
+
+      },
+      {
+        title: "Scenarios",
+        content: [
+         {
           isScenario: true,
           type: "info",
-          lines: [],
-          title: scenario.aiAnswer,
+          title: aiQuestion,
+          lines: [{ type: "text", src: `${scenarioDescription}` }, { type: "text", src: `You ask the AI: "${aiQuestion}"` }],
+          footer: disclaimer,
           image: scenario.image,
           censoringMethod: scenario.censoringMethod,
           scenario: scenarioType,
         },
-        {
-          ...baseScenarioQuestion,
-          title: `"${scenario.aiAnswer}" I think the answer is of good quality.`,
-          isAIAnswer: true,
-          ...AgreeDisagreeOptions,
-        },
-      ],
+          {
+            ...baseScenarioQuestion,
+            title: `"${scenario.aiAnswer}" I think the answer is of good quality.`,
+            isAIAnswer: true,
+            ...AgreeDisagreeOptions,
+          },
+        ]
+      }
     ];
   });
 };

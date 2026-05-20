@@ -46,7 +46,7 @@ export default function ConsentDialog({prolificId}: {prolificId: string}) {
 
               <p><strong>Research Purpose</strong></p>
               <p>
-                We invite you to participate in a survey study. Before you decide to participate, please ensure you understand the purpose and details of this study. Carefully read the information below, and if you have any unclear points or need more information, please ask the researchers. The purpose of this study is to evaluate people&apos;s potential concerns or discomforts towards everyday AR systems and whether censoring methods are effective in mitigating this.
+                The purpose of this study is to evaluate people&apos;s potential concerns or discomforts towards everyday AR systems and whether censoring methods are effective in mitigating this.
               </p>
 
               <p><strong>Research Risks</strong></p>
@@ -56,20 +56,23 @@ export default function ConsentDialog({prolificId}: {prolificId: string}) {
 
               <p><strong>Confidentiality of the Survey</strong></p>
               <p>
-                No personally identifiable data is collected and will be used solely for research purposes.
+                No personally identifiable data is collected.
               </p>
 
               <p><strong>Contact Information</strong></p>
               <p>
-                If you have any questions about this study or encounter adverse effects from participating in this study, you can contact the researchers. If you have questions about your rights as a research participant, please contact cs-26-sd-10-05@student.aau.dk.
+                If you have any questions about this study please contact cs-26-sd-10-05@student.aau.dk.
               </p>
 
               <p><strong>Voluntary Participation</strong></p>
               <p>
-                Whether or not you participate in this study is up to you. If you decide to participate in this study, you will be asked to sign an informed consent form. After signing the consent form, you can still withdraw at any time without reason, and withdrawing from this study will not affect your relationship with the researchers.
+                Your participation in this study is voluntary. After signing the consent form, you can still withdraw at any time without reason.
               </p>
 
               <p><strong>Informed Consent Form</strong></p>
+              <p>
+                This study has been approved by the Aalborg University Ethics Committee (case-no: 2026-505-00799).
+              </p>
               <p>
                 I have read and understood the provided information and have had the opportunity to ask questions. I voluntarily participate in the survey and can withdraw at any time without reason.
               </p>
