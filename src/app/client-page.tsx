@@ -73,7 +73,7 @@ export default function Home() {
   const onAnswerChange = (questionIdx: number, answer: string, optionIdx?: number) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      const question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]!.content[questionIdx];
       if (!question || !isQuestion(question)) return prevQuestions;
       question.answer = answer;
       question.answeredAt = new Date();
@@ -81,7 +81,7 @@ export default function Home() {
       if (question.type === "radio" && optionIdx !== undefined) {
         const option = question.options[optionIdx]!;
         if (option.type === "choose" && option.showNextQuestionOnClick !== undefined) {
-          const nextQuestion = updatedQuestions[currentPage]![questionIdx + 1];
+          const nextQuestion = updatedQuestions[currentPage]!.content[questionIdx + 1];
           if (nextQuestion && isQuestion(nextQuestion)) {
             nextQuestion.visible = option.showNextQuestionOnClick;
           }
@@ -95,7 +95,7 @@ export default function Home() {
   const onOptionInputAnswerChange = (questionIdx: number, optionIdx: number, inputText: string) => {
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions.pages];
-      const question = updatedQuestions[currentPage]![questionIdx];
+      const question = updatedQuestions[currentPage]!.content[questionIdx];
       if (question!.type !== "radio") return prevQuestions;
       const option = question!.options[optionIdx]!;
       if (option.type === "text") {
@@ -114,7 +114,7 @@ export default function Home() {
       const current = updatedPages[currentPage];
       if (!current) return prevQuestions;
 
-      const updatedPage = [...current];
+      const updatedPage = [...current.content];
       const question = updatedPage[questionIdx];
 
       if (question?.type !== "rank") return prevQuestions;
@@ -122,7 +122,7 @@ export default function Home() {
       question.answer = nextOptions.join(",");
       question.answeredAt = new Date();
       updatedPage[questionIdx] = { ...question, options: nextOptions };
-      updatedPages[currentPage] = updatedPage;
+      // updatedPages[currentPage] = updatedPage; // If you bring back ranking question, uncomment this line
 
       return { ...prevQuestions, pages: updatedPages };
     });
@@ -145,7 +145,7 @@ export default function Home() {
     if (!prolificId) throw new Error("Missing PROLIFIC_PID");
     // validate answers
     const errorObj = { hasError: false };
-    for (const question of questions.pages[currentPage]!) {
+    for (const question of questions.pages[currentPage]!.content) {
       if (!isQuestion(question)) continue;
       if (!isQuestionVisible(question)) continue;
       question.error = undefined; // reset previous errors
@@ -205,7 +205,7 @@ export default function Home() {
 
       // Send the answers to the database
       for (const pages of storedAnswers.pages) {
-        for (const question of pages) {
+        for (const question of pages.content) {
           if (question.type === "info") continue;
 
           const answer = question.answer;
@@ -253,38 +253,27 @@ export default function Home() {
       <div className="container mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6">
         {currentPage === 0 && (
           <>
-            <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-              Privacy in AR
+            <h1 className="text-6xl font-extrabold tracking-tight sm:text-[5rem]">
+              Privacy in AI glasses
             </h1>
             <div className="space-y-5">
               <p>
-                Augmented Reality (AR) systems often rely on real-time environmental sensing, including camera input and spatial mapping, while Artificial Intelligence (AI) can process and combine visual and textual data to generate outputs. Both technologies may involve the collection, processing, and storage of sensitive or personal information, sometimes in ways that are not fully transparent to users.
-                This survey aims to explore how users perceive privacy in the context of AR and AI. We are interested in understanding your level of awareness, concerns, expectations, and trust regarding how these technologies handle personal data.
+                Artificial Intelligence (AI) glasses process visual and audio data, which may involve collecting, processing, and storing sensitive or personal information, sometimes in ways that are not fully transparent to users.
+                This survey explores your perceptions of privacy, awareness, concerns, expectations, and trust regarding how AI glasses handle personal data.
               </p>
               <p>
-                If you are unaware of what AR systems can be used for, here is a video showcasing possible AR usage:
+                If you are unaware of what AI glasses can be used for, here are two videos showcasing how AI glasses can be used:
               </p>
               <video
                 src="/intro-videos/1.mp4"
                 controls
                 className="w-full sm:max-w-2xl aspect-video rounded-md"
               />
-              <p>
-                Here is another video showcasing possible AI usage:
-              </p>
               <video
                 src="/intro-videos/2.mp4"
                 controls
                 className="w-full sm:max-w-2xl aspect-video rounded-md"
               />
-
-              <p>
-                The study has been approved by the Aalborg University Ethics Committee (case-no: 2026-505-00799).
-              </p>
-
-              <p>
-                This survey takes approximately 35-40 minutes to complete.
-              </p>
             </div>
             <button
               type="submit"
@@ -309,7 +298,10 @@ export default function Home() {
                 />
               </div>
             </div>
-            {questions.pages[currentPage]?.map((page, index) =>
+            {questions.pages[currentPage]?.title && (
+              <h2 className="text-3xl font-bold">{questions.pages[currentPage].title}</h2>
+            )}
+            {questions.pages[currentPage]?.content.map((page, index) =>
               isQuestion(page) ? (
                 isQuestionVisible(page) && (
                   <Question
