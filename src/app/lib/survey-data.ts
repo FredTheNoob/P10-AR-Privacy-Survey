@@ -1,5 +1,5 @@
 import { AgreeDisagreeOptions, ScenarioQuestions } from "./common-survey-data";
-import type * as SurveyTypes from "./survey-types";
+import * as SurveyTypes from "./survey-types";
 
 export function isQuestion(page: SurveyTypes.Question | SurveyTypes.InformationPage): page is SurveyTypes.Question {
     return (page as SurveyTypes.Question).title !== undefined;
@@ -15,146 +15,131 @@ export function isQuestionVisible(question: SurveyTypes.Question): boolean {
 
 export const SURVEY_DATA: SurveyTypes.SurveyData = {
     pages: [
-        [],
-        [
-            {
-                title: "How old are you? (at least 18 years old)",
-                type: "number",
-                min: 18,
-                max: 120
-            },
-            {
-                title: "What is your gender?",
-                type: "radio",
-                options: [
-                    {
-                        type: "choose",
-                        value: "Male"
-                    },
-                    {
-                        type: "choose",
-                        value: "Female"
-                    },
-                    {
-                        type: "text",
-                        value: "Other"
-                    }
-                ]
-            },
-            {
-                title: "Do you have experience with Augmented Reality (AR)?",
-                type: "radio",
-                options: [
-                    {
-                        type: "choose",
-                        value: "No experience",
-                        showNextQuestionOnClick: false
-                    },
-                    {
-                        type: "choose",
-                        value: "Tried it once or twice",
-                        showNextQuestionOnClick: true
-                    },
-                    {
-                        type: "choose",
-                        value: "Occasional use (Rougly once a month or once a week)",
-                        showNextQuestionOnClick: true
-                    },
-                    {
-                        type: "choose",
-                        value: "Regular use (Several times a week)",
-                        showNextQuestionOnClick: true
-                    },
-                    {
-                        type: "choose",
-                        value: "Frequent / expert use (I use it daily or multiple times per day)",
-                        showNextQuestionOnClick: true
-                    }
-                ]
-            },
-            {
-                visible: false,
-                title: "Have you used any AI in your usage of AR?",
-                type: "radio",
-                options: [
-                    {
-                        type: "choose",
-                        value: "Yes"
-                    },
-                    {
-                        type: "choose",
-                        value: "No"
-                    }
-                ]
-            },
-            {
-                title: "I am aware of how AR systems process and store my data.",
-                ...AgreeDisagreeOptions
-            },
-            {
-                title: "Which types of data are you most concerned about sharing?",
-                type: "text",
-                value: "",
-                multiline: true
-            },
-            {
-                title: "I am concerned that personal information may influence the answers the AI gives me.",
-                type: "radio",
-                options: [
-                    {
-                        type: "choose",
-                        value: "Strongly disagree",
-                        showNextQuestionOnClick: false
-                    },
-                    {
-                        type: "choose",
-                        value: "Disagree",
-                        showNextQuestionOnClick: false
-                    },
-                    {
-                        type: "choose",
-                        value: "Neutral",
-                        showNextQuestionOnClick: false
-                    },
-                    {
-                        type: "choose",
-                        value: "Agree",
-                        showNextQuestionOnClick: true
-                    },
-                    {
-                        type: "choose",
-                        value: "Strongly agree",
-                        showNextQuestionOnClick: true
-                    }
-                ]
-            },
-            {
-                visible: false,
-                title: "What personal information concerns you the most?",
-                type: "text",
-                value: "",
-                multiline: true
-            },
-        ],
-        [
-            {
-                type: "info",
-                lines: [
-                    { type: "text", src: "To study privacy perceptions in realistic scenarios, we recorded a set of first-person videos using wearable smart glasses, specifically the Ray-Ban Meta Wayfare Gen 2 Glasses. The glasses are equipped with an embedded camera that enables hands-free video recording, closely reflecting how AR systems may passively observe and process visual information in real-world use." },
-                    { type: "text", src: "The recordings capture everyday situations from the perspective of the wearer, including interactions in both public and private environments." },
-                    { type: "text", src: "These recordings are used solely for research purposes. In this survey you will be shown a set of images from these recordings to evaluate privacy implications in a realistic AR context." },
-                    { type: "text", src: "One of four privacy-preserving measures will be applied to the images shown. The four privacy-preserving measures are (shown with examples):" },
-                    { type: "text", src: "None: Nothing done to the image." },
-                    { type: "image", src: "/frames/None/Scenario-1-03-frame_278.jpg" },
-                    { type: "text", src: "Black boxes: Draws a black box over the privacy sensitive object, such as a face." },
-                    { type: "image", src: "/frames/BlackBoxes/Scenario-1-03-black_box-frame_278.jpg" },
-                    { type: "text", src: "Blur: Draws a blurred square over the privacy sensitive object, such as a face." },
-                    { type: "image", src: "/frames/Blur/Scenario-1-03-blur-frame_278.jpg" },
-                    { type: "text", src: "Generative Censoring: Draws an AI-generated picture over the privacy sensitive object." },
-                    { type: "image", src: "/frames/FLUX/flux-Scenario-1-03-frame_278.jpg" },
-                ]
-            }
-        ],
+        {
+            content: []
+        },
+        {
+            title: "Preliminary Questions",
+            content: [
+                {
+                    title: "Do you have experience with Augmented Reality (AR)?",
+                    type: "radio",
+                    options: [
+                        {
+                            type: "choose",
+                            value: "No experience",
+                            showNextQuestionOnClick: false
+                        },
+                        {
+                            type: "choose",
+                            value: "Tried it once or twice",
+                            showNextQuestionOnClick: true
+                        },
+                        {
+                            type: "choose",
+                            value: "Occasional use (Rougly once a month or once a week)",
+                            showNextQuestionOnClick: true
+                        },
+                        {
+                            type: "choose",
+                            value: "Regular use (Several times a week)",
+                            showNextQuestionOnClick: true
+                        },
+                        {
+                            type: "choose",
+                            value: "Frequent / expert use (I use it daily or multiple times per day)",
+                            showNextQuestionOnClick: true
+                        }
+                    ]
+                },
+                {
+                    visible: false,
+                    title: "Have you used any AI in your usage of AR?",
+                    type: "radio",
+                    options: [
+                        {
+                            type: "choose",
+                            value: "Yes"
+                        },
+                        {
+                            type: "choose",
+                            value: "No"
+                        }
+                    ]
+                },
+                {
+                    title: "I am aware of how AR systems process and store my data.",
+                    ...AgreeDisagreeOptions
+                },
+                {
+                    title: "Which types of data are you most concerned about sharing?",
+                    type: "text",
+                    value: "",
+                    multiline: true
+                },
+                {
+                    title: "I am concerned that personal information may influence the answers the AI gives me.",
+                    type: "radio",
+                    options: [
+                        {
+                            type: "choose",
+                            value: "Strongly disagree",
+                            showNextQuestionOnClick: false
+                        },
+                        {
+                            type: "choose",
+                            value: "Disagree",
+                            showNextQuestionOnClick: false
+                        },
+                        {
+                            type: "choose",
+                            value: "Neutral",
+                            showNextQuestionOnClick: false
+                        },
+                        {
+                            type: "choose",
+                            value: "Agree",
+                            showNextQuestionOnClick: true
+                        },
+                        {
+                            type: "choose",
+                            value: "Strongly agree",
+                            showNextQuestionOnClick: true
+                        }
+                    ]
+                },
+                {
+                    visible: false,
+                    title: "What personal information do you feel would most influence the AI?",
+                    type: "text",
+                    value: "",
+                    multiline: true
+                },
+            ]
+
+        },
+        {
+            title: "Scenarios introduction",
+            content: [
+                {
+                    type: "info",
+                    lines: [
+                        { type: "text", src: "To study privacy perceptions in realistic scenarios, we recorded a set of first-person videos using wearable smart glasses. The glasses are equipped with a camera enabling hands-free video recording, reflecting how AI glasses may passively observe and process visual information in real-world use." },
+                        { type: "text", src: "You will be shown a set of images from these recordings." },
+                        { type: "text", src: "One of four privacy-preserving measures will be applied to the images shown. The four privacy-preserving measures are (shown with examples):" },
+                        { type: "text", src: "None: Nothing done to the image." },
+                        { type: "image", src: "/frames/None/Scenario-1-03-frame_278.jpg" },
+                        { type: "text", src: "Black boxes: Draws a black box over the privacy sensitive object, such as a face." },
+                        { type: "image", src: "/frames/BlackBoxes/Scenario-1-03-black_box-frame_278.jpg" },
+                        { type: "text", src: "Blur: Draws a blurred square over the privacy sensitive object, such as a face." },
+                        { type: "image", src: "/frames/Blur/Scenario-1-03-blur-frame_278.jpg" },
+                        { type: "text", src: "Generative Censoring: Draws an AI-generated picture over the privacy sensitive object." },
+                        { type: "image", src: "/frames/FLUX/flux-Scenario-1-03-frame_278.jpg" },
+                    ]
+                }
+            ]
+
+        },
         ...ScenarioQuestions(
             "SUPERMARKET",
             "You are at the supermarket looking for cheap vegetables.",
@@ -317,72 +302,75 @@ export const SURVEY_DATA: SurveyTypes.SurveyData = {
                 },
             ],
         ),
-        [
-            {
-                title: "I am comfortable with sending a video/image with other people to an AI to get my question answered.",
-                ...AgreeDisagreeOptions
-            },
-            {
-                title: "I am comfortable with others sending a video/image with me to an AI to get their question answered.",
-                ...AgreeDisagreeOptions
-            },
-            // {
-            //     required: false,
-            //     title: "Which censoring methods are most effective at protecting user privacy? Rank them.",
-            //     type: "rank",
-            //     options: [
-            //         "None",
-            //         "Generative Censoring",
-            //         "Blur",
-            //         "Black box"
-            //     ],
-            //     answer: "None,Generative Censoring,Blur,Black box"
-            // },
-            // {
-            //     title: "Why did you pick this ranking?",
-            //     type: "text",
-            //     value: "",
-            //     multiline: true
-            // },
-            {
-                title: "Does your willingness to share videos/images with an AI depend on your relationship with the people in the video/image?",
-                type: "radio",
-                options: [
-                    {
-                        type: "choose",
-                        value: "Not at all"
-                    },
-                    {
-                        type: "choose",
-                        value: "Slightly"
-                    },
-                    {
-                        type: "choose",
-                        value: "Moderately"
-                    },
-                    {
-                        type: "choose",
-                        value: "Strongly"
-                    },
-                    {
-                        type: "choose",
-                        value: "Very strongly"
-                    },
-                ]
-            },
-            {
-                title: "What privacy sensitive information do you want to remove from a video/image?",
-                type: "text",
-                value: "",
-                multiline: true
-            },
-            {
-                required: false,
-                title: "Any further comments?",
-                type: "text",
-                value: "",
-                multiline: true
-            },
-        ]
+        {
+            title: "Final Questions",
+            content: [
+                {
+                    title: "I am comfortable with sending a video/image with other people to an AI to get my question answered.",
+                    ...AgreeDisagreeOptions
+                },
+                {
+                    title: "I am comfortable with others sending a video/image with me to an AI to get their question answered.",
+                    ...AgreeDisagreeOptions
+                },
+                // {
+                //     required: false,
+                //     title: "Which censoring methods are most effective at protecting user privacy? Rank them.",
+                //     type: "rank",
+                //     options: [
+                //         "None",
+                //         "Generative Censoring",
+                //         "Blur",
+                //         "Black box"
+                //     ],
+                //     answer: "None,Generative Censoring,Blur,Black box"
+                // },
+                // {
+                //     title: "Why did you pick this ranking?",
+                //     type: "text",
+                //     value: "",
+                //     multiline: true
+                // },
+                {
+                    title: "Does your willingness to share videos/images with an AI depend on your relationship with the people in the video/image?",
+                    type: "radio",
+                    options: [
+                        {
+                            type: "choose",
+                            value: "Not at all"
+                        },
+                        {
+                            type: "choose",
+                            value: "Slightly"
+                        },
+                        {
+                            type: "choose",
+                            value: "Moderately"
+                        },
+                        {
+                            type: "choose",
+                            value: "Strongly"
+                        },
+                        {
+                            type: "choose",
+                            value: "Very strongly"
+                        },
+                    ]
+                },
+                {
+                    title: "What privacy sensitive information do you want to remove from a video/image?",
+                    type: "text",
+                    value: "",
+                    multiline: true
+                },
+                {
+                    required: false,
+                    title: "Any further comments?",
+                    type: "text",
+                    value: "",
+                    multiline: true
+                },
+            ]
+        }
     ]
 }
